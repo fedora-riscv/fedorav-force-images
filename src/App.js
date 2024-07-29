@@ -24,6 +24,11 @@ import {
 } from "@chakra-ui/react";
 import { ExternalLinkIcon, DownloadIcon } from "@chakra-ui/icons";
 
+const formatDate = (timestamp) => {
+  const date = new Date(timestamp * 1000);
+  return date.toLocaleString();
+};
+
 function App() {
   const [data, setData] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -183,7 +188,7 @@ function App() {
                   </Text>
                   <Badge
                     colorScheme={getStatusBadgeColor(
-                      selectedProduct.board_status
+                      selectedProduct.board_status,
                     )}
                     fontSize="md"
                   >
@@ -227,6 +232,11 @@ function App() {
             )}
           </Box>
         </Flex>
+        <Box textAlign="center" mt={6}>
+          <Text fontSize="sm" color="gray.500">
+            Last Updated: {formatDate(data.latest_updated)}
+          </Text>
+        </Box>
       </Box>
     </ChakraProvider>
   );

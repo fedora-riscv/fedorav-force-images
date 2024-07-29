@@ -8,15 +8,12 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-scripts": "^5.0.0",
-    "@mui/material": "5.16.5",
     "@emotion/styled": "11.13.0",
     "@emotion/react": "11.13.0",
-    "@mui/styles": "5.16.5",
     "@mui/icons-material": "5.16.5",
     "@chakra-ui/react": "2.8.2",
     "framer-motion": "11.3.19",
-    "@chakra-ui/icons": "2.1.1",
-    "react-router-dom": "6.25.1"
+    "@chakra-ui/icons": "2.1.1"
   },
   "devDependencies": {
     "@types/react": "18.2.38",
