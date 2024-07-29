@@ -164,7 +164,7 @@ function App() {
                   <Image
                     src={`${imageMap[selectedProduct.name]}`}
                     alt={selectedProduct.name}
-                    maxH="400px"
+                    maxH="260px"
                     objectFit="contain"
                     borderRadius="md"
                     mb={4}
