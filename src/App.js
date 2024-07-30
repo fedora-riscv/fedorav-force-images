@@ -64,7 +64,7 @@ function App() {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
-    fetch("https://image.fedoravforce.com/stats/")
+    fetch("https://image.fedoravforce.org/stats/")
       .then((response) => response.json())
       .then((data) => setData(data))
       .catch((error) => console.error("Error fetching data:", error));
