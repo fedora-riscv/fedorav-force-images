@@ -5,15 +5,16 @@
   "keywords": [],
   "main": "src/index.tsx",
   "dependencies": {
+    "@chakra-ui/icons": "2.1.1",
+    "@chakra-ui/react": "2.8.2",
+    "@emotion/react": "11.13.0",
+    "@emotion/styled": "11.13.0",
+    "@mui/icons-material": "5.16.5",
+    "framer-motion": "11.3.19",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "react-scripts": "^5.0.0",
-    "@emotion/styled": "11.13.0",
-    "@emotion/react": "11.13.0",
-    "@mui/icons-material": "5.16.5",
-    "@chakra-ui/react": "2.8.2",
-    "framer-motion": "11.3.19",
-    "@chakra-ui/icons": "2.1.1"
+    "react-router-dom": "^6.26.0",
+    "react-scripts": "^5.0.0"
   },
   "devDependencies": {
     "@types/react": "18.2.38",
