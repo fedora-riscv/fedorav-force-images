@@ -118,6 +118,7 @@ function ProductDetails({ data }) {
     Pioneer: "images/pionner.webp",
     "ROMA II": "images/roma-ii.webp",
     "VisionFive V2": "images/vision-five-2.jpg",
+    'EIC7700-EVB': 'images/eic7700fg-evb.jpg',
   };
 
   const getStatusBadgeColor = (status) => {
@@ -168,7 +169,7 @@ function ProductDetails({ data }) {
       )}
       <VStack align="start" spacing={1}>
         <HStack spacing={2}>
-          <Text fontWeight="bold" color="#444">
+          <Text fontWeight="bold" fontSize="lg" color="#444">
             Vendor:
           </Text>
           {selectedProduct.vendor_link ? (
@@ -181,7 +182,7 @@ function ProductDetails({ data }) {
         </HStack>
 
         <HStack spacing={2}>
-          <Text fontWeight="bold" color="#444">
+          <Text fontWeight="bold" fontSize="lg" color="#444">
             SoC:
           </Text>
           {selectedSoc.link ? (
@@ -199,7 +200,7 @@ function ProductDetails({ data }) {
 
         {selectedProduct.wiki_page && (
           <HStack spacing={2}>
-            <Text fontWeight="bold" color="#444">
+            <Text fontWeight="bold" fontSize="lg" color="#444">
               Wiki Page:
             </Text>
             <Link href={selectedProduct.wiki_page} isExternal color="teal.500">
@@ -209,7 +210,7 @@ function ProductDetails({ data }) {
         )}
 
         <HStack spacing={2}>
-          <Text fontWeight="bold" color="#444">
+          <Text fontWeight="bold" fontSize="lg" color="#444">
             Status:
           </Text>
           <Badge
@@ -242,13 +243,13 @@ function ProductDetails({ data }) {
                     {image.name}
                   </Button>
                 ) : (
-                  <Text color="#444">{image.name} (Coming soon)</Text>
+                  <Text color="#444">{image.name} {selectedProduct.board_status === 'EOL' ? '(Not available)' : '(Coming soon)'}</Text>
                 )}
               </ListItem>
             ))
           ) : (
             <Text color="#444">
-              No images available (Coming soon)
+              No images available {selectedProduct.board_status !== 'EOL' && '(Coming soon)'}
             </Text>
           )}
         </List>
