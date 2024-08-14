@@ -20,9 +20,15 @@ import {
   Divider,
   Badge,
   Image,
+  Code,
 } from "@chakra-ui/react";
 import { ExternalLinkIcon, DownloadIcon, InfoIcon } from "@chakra-ui/icons";
 import { BrowserRouter as Router, Routes, Route, useParams, Link as RouterLink } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from 'rehype-raw';
+import raw from "raw.macro";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import OpticalDisk from "./OpticalDisk";
 
 const formatDate = (timestamp) => {
@@ -119,6 +125,11 @@ function ProductDetails({ data }) {
     "ROMA II": "images/roma-ii.webp",
     "VisionFive V2": "images/vision-five-2.jpg",
     'EIC7700-EVB': 'images/eic7700fg-evb.jpg',
+  };
+
+  const mdMap = {
+    "Jupiter": raw('./md/jupiter.md'),
+    'EIC7700-EVB': raw('./md/eswin.md'),
   };
 
   const getStatusBadgeColor = (status) => {
@@ -221,6 +232,86 @@ function ProductDetails({ data }) {
           </Badge>
         </HStack>
       </VStack>
+      {mdMap[selectedProduct.name] && (
+        <Box width="100%">
+          <Text fontSize="lg" fontWeight="bold" mt={4} color="#444">
+            Additional Information:
+          </Text>
+          <ReactMarkdown
+            children={mdMap[selectedProduct.name]}
+            rehypePlugins={[rehypeRaw]}
+            components={{
+              // a: ({ node, ...props }) => (
+              //   <Link {...props} color="teal.500" isExternal />
+              // ),
+              details({ node, ...props }) {
+                return (
+                  <Box
+                    as="details"
+                    p={4}
+                    border="1px"
+                    borderColor="gray.200"
+                    borderRadius="md"
+                    _open={{ bg: 'gray.100' }}
+                    {...props}
+                  />
+                );
+              },
+              summary({ node, ...props }) {
+                return (
+                  <Box
+                    as="summary"
+                    cursor="pointer"
+                    fontWeight="bold"
+                    _hover={{ color: 'teal.500' }}
+                    {...props}
+                  />
+                );
+              },
+              p({ node, ...props }) {
+                return <Text mt={2} {...props} />;
+              },
+              h1({ node, ...props }) {
+                return <Heading as="h1" size="lg" mt={6} mb={4} {...props} />;
+              },
+              h2({ node, ...props }) {
+                return <Heading as="h2" size="md" mt={6} mb={4} {...props} />;
+              },
+              h3({ node, ...props }) {
+                return <Heading as="h3" size="sm" mt={6} mb={4} {...props} />;
+              },
+              h4({ node, ...props }) {
+                return <Heading as="h4" size="xs" mt={6} mb={4} {...props} />;
+              },
+              h5({ node, ...props }) {
+                return <Heading as="h5" size="xs" mt={6} mb={4} {...props} />;
+              },
+              h6({ node, ...props }) {
+                return <Heading as="h6" size="xs" mt={6} mb={4} {...props} />;
+              },
+              code({ node, inline, className, children, ...props }) {
+                // e.g. "language-bash" -> "bash"
+                const match = /language-(\w+)/.exec(className || '');
+                return !inline && match ? (
+                  <SyntaxHighlighter
+                    style={solarizedlight}
+                    language={match[1]}
+                    PreTag="div"
+                    {...props}
+                  >
+                    {children}
+                  </SyntaxHighlighter>
+                ) : (
+                  <Code colorScheme="gray" fontSize="inherit" {...props}>
+                    {children}
+                  </Code>
+                );
+              },
+      
+            }}
+          />
+        </Box>
+      )}
       <Box width="100%">
         <Text fontSize="lg" fontWeight="bold" mt={4} color="#444">
           Images:
