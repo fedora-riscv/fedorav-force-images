@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Box, VStack, Heading, Divider, Image, HStack, Text, Link, Badge, List, ListItem, Button, UnorderedList, OrderedList } from "@chakra-ui/react";
+import { Box, VStack, Heading, Divider, Image, HStack, Text, Link, Badge, List, ListItem, Button, UnorderedList, OrderedList, Code } from "@chakra-ui/react";
 import { ExternalLinkIcon, DownloadIcon, InfoIcon } from "@chakra-ui/icons";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from 'rehype-raw';
