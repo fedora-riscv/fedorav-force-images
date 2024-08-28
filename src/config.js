@@ -21,6 +21,11 @@ export const imageMap = {
   'EIC7700-EVB': 'images/eic7700fg-evb.jpg',
   'RuyiBook': 'images/ruyibook.webp',
   'NANHU_V2_DEV_BOARD V01': 'images/nanhu-v2.jpg',
+  'ROMA': 'images/roma.webp',
+  'Oasis': 'images/sg2380.webp',
+  'Megrez': 'images/megrez.webp',
+  'MUSE N1': 'images/muse-n1.png',
+  'Banana Pi BPI-F3': 'images/banana-pi-bpi-f3.jpg',
 };
 
 export const mdMap = {
