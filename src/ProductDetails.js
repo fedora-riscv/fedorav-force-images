@@ -246,6 +246,15 @@ export default function ProductDetails({ data }) {
           )}
         </List>
       </Box>
+
+      <Box>
+        <Text fontSize="lg" fontWeight="bold" mt={4} color="#444">
+          Changelog:
+        </Text>
+        <Text whiteSpace='pre-wrap'>
+          {selectedProduct.changelog === '' ? 'None' : selectedProduct.changelog}
+        </Text>
+      </Box>
     </VStack>
   );
 }
