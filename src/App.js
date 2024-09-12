@@ -9,11 +9,12 @@ import {
 } from "@chakra-ui/react";
 import { InfoIcon } from "@chakra-ui/icons";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import OpticalDisk from "./OpticalDisk";
+// import OpticalDisk from "./OpticalDisk";
 import { apiUrl } from "./config";
 import BoardList from "./BoardList";
 import ProductDetails from "./ProductDetails";
 import { formatDate } from "./utils";
+import { Margin } from "@mui/icons-material";
 
 function App() {
   const [data, setData] = useState(null);
@@ -47,10 +48,12 @@ function App() {
             alignItems="center"
             borderRadius="md"
           >
-            <OpticalDisk height={32} width={32} />
+            <img src="images/fedora-remix.png" alt="Fedora Remix" width="5%" />
             <Heading ml={2} size="lg" color="#444">
               Fedora-V Force Images
             </Heading>
+            <img src="images/fedora-icon.svg" alt="Fedora" width="30px" />
+            {/* <OpticalDisk height={32} width={32} /> */}
           </Flex>
           <Flex direction={["column", "column", "row"]}>
             <BoardList data={data} />
