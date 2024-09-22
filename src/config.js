@@ -26,6 +26,8 @@ export const imageMap = {
   'Megrez': 'images/megrez.webp',
   'MUSE N1': 'images/muse-n1.png',
   'Banana Pi BPI-F3': 'images/banana-pi-bpi-f3.jpg',
+  'QEMU': 'images/qemu.png',
+  'HiFive Premier P550': 'images/hifive-premier-p550.avif',
 };
 
 export const mdMap = {
