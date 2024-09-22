@@ -9,12 +9,12 @@ import {
 } from "@chakra-ui/react";
 import { InfoIcon } from "@chakra-ui/icons";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// import OpticalDisk from "./OpticalDisk";
 import { apiUrl } from "./config";
 import BoardList from "./BoardList";
 import ProductDetails from "./ProductDetails";
 import { formatDate } from "./utils";
-import { Margin } from "@mui/icons-material";
+import HowToBurnImagesToSDCards from "./HowToBurnImagesToSDCards";
+import HelpList from "./HelpList";
 
 function App() {
   const [data, setData] = useState(null);
@@ -53,10 +53,12 @@ function App() {
               Fedora-V Force Images
             </Heading>
             <img src="images/fedora-icon.svg" alt="Fedora" width="30px" />
-            {/* <OpticalDisk height={32} width={32} /> */}
           </Flex>
           <Flex direction={["column", "column", "row"]}>
-            <BoardList data={data} />
+            <Box>
+              <HelpList />
+              <BoardList data={data} />
+            </Box>
             <Box flex="1" p={6} bg="white" boxShadow="md" borderRadius="md">
               <Routes>
                 <Route path="/" element={
@@ -65,6 +67,11 @@ function App() {
                     <Text fontSize="lg" color="gray.500" textAlign="center">
                       Select an item from the left to see details.
                     </Text>
+                  </Flex>
+                } />
+                <Route path="/how-to-burn-images-to-sd-cards" element={
+                  <Flex align="center" justify="center" direction="column" p={6}>
+                      <HowToBurnImagesToSDCards />
                   </Flex>
                 } />
                 <Route path="/:productName" element={
