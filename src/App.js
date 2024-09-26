@@ -29,7 +29,7 @@ function App() {
   if (!data) {
     return (
       <Flex justifyContent="center" alignItems="center" height="100vh">
-        <Spinner size="xl" />
+        <Spinner thickness="3px" width="50px" height="50px" />
       </Flex>
     );
   }
