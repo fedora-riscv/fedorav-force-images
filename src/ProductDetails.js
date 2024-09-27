@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Box, VStack, Heading, Divider, Image, HStack, Text, Link, Badge, List, ListItem, Button, UnorderedList, OrderedList, Code } from "@chakra-ui/react";
-import { ExternalLinkIcon, DownloadIcon, InfoIcon } from "@chakra-ui/icons";
+import { Box, VStack, Heading, Divider, Image, HStack, Text, Link, Badge, List, ListItem, Button, UnorderedList, OrderedList, Code, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverHeader, PopoverBody } from "@chakra-ui/react";
+import { ExternalLinkIcon, DownloadIcon, InfoIcon, CopyIcon } from "@chakra-ui/icons";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from 'rehype-raw';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -222,20 +222,51 @@ export default function ProductDetails({ data }) {
             selectedProduct.images.map((image, imageIndex) => (
               <ListItem key={imageIndex}>
                 {image.link ? (
-                  <Button
-                    as={Link}
-                    href={image.link}
-                    isExternal
-                    rightIcon={<DownloadIcon />}
-                    colorScheme="blue"
-                    variant="outline"
-                    width="100%"
-                    justifyContent="space-between"
-                  >
-                    {image.name}
-                  </Button>
+                  <VStack align="stretch" width="100%">
+                    <Button
+                      as={Link}
+                      href={image.link}
+                      isExternal
+                      rightIcon={<DownloadIcon />}
+                      colorScheme="blue"
+                      variant="outline"
+                      width="100%"
+                      justifyContent="space-between"
+                    >
+                      {image.name}
+                    </Button>
+                    {image.md5 && (
+                      <HStack spacing={2} alignItems="center">
+                        <Text fontSize="sm" color="gray.600">
+                          MD5: {image.md5}
+                        </Text>
+                        <Button size="sm" variant="ghost" onClick={() => navigator.clipboard.writeText(image.md5)}>
+                          <CopyIcon />
+                        </Button>
+                          <Popover>
+                            <PopoverTrigger>
+                              <InfoIcon />
+                            </PopoverTrigger>
+                            <PopoverContent>
+                              <PopoverArrow />
+                              <PopoverCloseButton />
+                              <PopoverHeader>Validate MD5</PopoverHeader>
+                              <PopoverBody>
+                                <OrderedList>
+                                  <ListItem>Download the file</ListItem>
+                                  <ListItem>Run <Code>md5sum ./downloaded_file</Code></ListItem>
+                                  <ListItem>Compare with MD5 provided here</ListItem>
+                                </OrderedList>
+                              </PopoverBody>
+                            </PopoverContent>
+                          </Popover>
+                      </HStack>
+                    )}
+                  </VStack>
                 ) : (
-                  <Text color="#444">{image.name} {selectedProduct.board_status === 'EOL' ? '(Not available)' : '(Coming soon)'}</Text>
+                  <Text color="#444">
+                    {image.name} {selectedProduct.board_status === 'EOL' ? '(Not available)' : '(Coming soon)'}
+                  </Text>
                 )}
               </ListItem>
             ))
