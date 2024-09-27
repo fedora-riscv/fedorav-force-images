@@ -28,6 +28,7 @@ export const imageMap = {
   'Banana Pi BPI-F3': 'images/banana-pi-bpi-f3.jpg',
   'QEMU': 'images/qemu.png',
   'HiFive Premier P550': 'images/hifive-premier-p550.avif',
+  'Unmatched': 'images/unmatched.avif',
 };
 
 export const mdMap = {
