@@ -64,3 +64,9 @@ jobs:
         asset_path: build.zip
         asset_name: build.zip
         asset_content_type: application/zip
+        
+    - name: Publish build to remote host
+      run: |
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        ssh-keyscan -p ${{ secrets.SERVER_PORT }} ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+        rsync -av --delete build/ -e "${{ secrets.SERVER_ENV }}" ${{ secrets.SERVER_PATH }}
