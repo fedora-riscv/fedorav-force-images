@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Box, VStack, Heading, Divider, Image, HStack, Text, Link, Badge, List, ListItem, Button, UnorderedList, OrderedList, Code, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverHeader, PopoverBody } from "@chakra-ui/react";
+import { Box, VStack, Heading, Divider, Image, HStack, Text, Link, Badge, List, ListItem, Button, UnorderedList, OrderedList, Code, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverHeader, PopoverBody, Wrap, WrapItem, Tag, TagLabel } from "@chakra-ui/react";
 import { ExternalLinkIcon, DownloadIcon, InfoIcon, CopyIcon } from "@chakra-ui/icons";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from 'rehype-raw';
@@ -33,6 +33,17 @@ export default function ProductDetails({ data }) {
         return "red";
       case "DEV":
         return "yellow";
+      default:
+        return "gray";
+    }
+  };
+
+  const getFeatureTagColor = (status) => {
+    switch (status.toLowerCase()) {
+      case 'ok':
+        return "green";
+      case 'ng':
+        return "red";
       default:
         return "gray";
     }
@@ -277,6 +288,27 @@ export default function ProductDetails({ data }) {
           )}
         </List>
       </Box>
+
+      {selectedProduct.features && Object.keys(selectedProduct.features).length > 0 && (
+        <Box width="100%">
+          <Text fontSize="lg" fontWeight="bold" mt={4} mb={2} color="#444">
+            Features:
+          </Text>
+          <Wrap spacing={2}>
+            {Object.entries(selectedProduct.features).map(([feature, status]) => (
+              <WrapItem key={feature}>
+                <Tag 
+                  colorScheme={getFeatureTagColor(status)}
+                  px={3}
+                  py={1}
+                >
+                  <TagLabel>{feature}</TagLabel>
+                </Tag>
+              </WrapItem>
+            ))}
+          </Wrap>
+        </Box>
+      )}
 
       <Box>
         <Text fontSize="lg" fontWeight="bold" mt={4} color="#444">
