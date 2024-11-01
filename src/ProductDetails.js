@@ -7,6 +7,7 @@ import rehypeRaw from 'rehype-raw';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { imageMap, mdMap } from "./config";
+import Giscus from '@giscus/react';
 
 export default function ProductDetails({ data }) {
   const { productName } = useParams();
@@ -317,6 +318,26 @@ export default function ProductDetails({ data }) {
         <Text whiteSpace='pre-wrap'>
           {selectedProduct.changelog === '' ? 'None' : selectedProduct.changelog}
         </Text>
+      </Box>
+
+      <Box width="100%">
+        <Text fontSize="lg" fontWeight="bold" mt={4} mb={4} color="#444">
+          Comments:
+        </Text>
+        <Giscus
+          key={productName}
+          id="comments"
+          repo="fedora-riscv/fedorav-force-images-discussions"
+          repoId="R_kgDONI_toQ"
+          category="Q&A"
+          categoryId="DIC_kwDONI_toc4Cj42F"
+          mapping="pathname"
+          emitMetadata="0"
+          inputPosition="top"
+          theme="light"
+          lang="en"
+          loading="lazy"
+        />
       </Box>
     </VStack>
   );
