@@ -296,17 +296,19 @@ export default function ProductDetails({ data }) {
             Features:
           </Text>
           <Wrap spacing={2}>
-            {Object.entries(selectedProduct.features).map(([feature, status]) => (
-              <WrapItem key={feature}>
-                <Tag 
-                  colorScheme={getFeatureTagColor(status)}
-                  px={3}
-                  py={1}
-                >
-                  <TagLabel>{feature}</TagLabel>
-                </Tag>
-              </WrapItem>
-            ))}
+            {Object.entries(selectedProduct.features).map(([feature, status]) => 
+              status !== 'unknown' ? (
+                <WrapItem key={feature}>
+                  <Tag 
+                    colorScheme={getFeatureTagColor(status)}
+                    px={3}
+                    py={1}
+                  >
+                    <TagLabel>{feature}</TagLabel>
+                  </Tag>
+                </WrapItem>
+              ) : null
+            )}
           </Wrap>
         </Box>
       )}
