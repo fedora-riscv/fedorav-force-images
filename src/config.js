@@ -35,3 +35,8 @@ export const mdMap = {
   "Jupiter": raw('./md/jupiter.md'),
   'EIC7700-EVB': raw('./md/eswin.md'),
 };
+
+export const testReportMap = {
+  'DC-ROMA I': 'https://github.com/fedora-riscv/test-reports/blob/main/roma-i/index.md',
+  'DC-ROMA II': 'https://github.com/fedora-riscv/test-reports/blob/main/roma-ii/index.md',
+};

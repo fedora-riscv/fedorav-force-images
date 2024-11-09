@@ -6,7 +6,7 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from 'rehype-raw';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { imageMap, mdMap } from "./config";
+import { imageMap, mdMap, testReportMap } from "./config";
 import Giscus from '@giscus/react';
 
 export default function ProductDetails({ data }) {
@@ -255,23 +255,23 @@ export default function ProductDetails({ data }) {
                         <Button size="sm" variant="ghost" onClick={() => navigator.clipboard.writeText(image.md5)}>
                           <CopyIcon />
                         </Button>
-                          <Popover>
-                            <PopoverTrigger>
-                              <InfoIcon />
-                            </PopoverTrigger>
-                            <PopoverContent>
-                              <PopoverArrow />
-                              <PopoverCloseButton />
-                              <PopoverHeader>Validate MD5</PopoverHeader>
-                              <PopoverBody>
-                                <OrderedList>
-                                  <ListItem>Download the file</ListItem>
-                                  <ListItem>Run <Code>md5sum ./downloaded_file</Code></ListItem>
-                                  <ListItem>Compare with MD5 provided here</ListItem>
-                                </OrderedList>
-                              </PopoverBody>
-                            </PopoverContent>
-                          </Popover>
+                        <Popover>
+                          <PopoverTrigger>
+                            <InfoIcon />
+                          </PopoverTrigger>
+                          <PopoverContent>
+                            <PopoverArrow />
+                            <PopoverCloseButton />
+                            <PopoverHeader>Validate MD5</PopoverHeader>
+                            <PopoverBody>
+                              <OrderedList>
+                                <ListItem>Download the file</ListItem>
+                                <ListItem>Run <Code>md5sum ./downloaded_file</Code></ListItem>
+                                <ListItem>Compare with MD5 provided here</ListItem>
+                              </OrderedList>
+                            </PopoverBody>
+                          </PopoverContent>
+                        </Popover>
                       </HStack>
                     )}
                   </VStack>
@@ -298,7 +298,7 @@ export default function ProductDetails({ data }) {
           <Wrap spacing={2}>
             {Object.entries(selectedProduct.features).map(([feature, status]) => (
               <WrapItem key={feature}>
-                <Tag 
+                <Tag
                   colorScheme={getFeatureTagColor(status)}
                   px={3}
                   py={1}
@@ -308,6 +308,17 @@ export default function ProductDetails({ data }) {
               </WrapItem>
             ))}
           </Wrap>
+        </Box>
+      )}
+
+      {testReportMap[selectedProduct.name] && (
+        <Box width="100%">
+          <Text fontSize="lg" fontWeight="bold" mt={4} color="#444">
+            Test Report:
+          </Text>
+          <Link href={testReportMap[selectedProduct.name]} isExternal color="teal.500">
+            View Test Report <ExternalLinkIcon mx="2px" />
+          </Link>
         </Box>
       )}
 
