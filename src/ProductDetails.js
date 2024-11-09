@@ -345,6 +345,7 @@ export default function ProductDetails({ data }) {
           mapping="pathname"
           emitMetadata="0"
           inputPosition="top"
+          reactionsEnabled="0"
           theme="light"
           lang="en"
           loading="lazy"
