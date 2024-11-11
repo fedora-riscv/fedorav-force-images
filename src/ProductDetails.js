@@ -45,6 +45,8 @@ export default function ProductDetails({ data }) {
         return "green";
       case 'ng':
         return "red";
+      case 'warning':
+        return "yellow";
       default:
         return "gray";
     }
@@ -297,7 +299,7 @@ export default function ProductDetails({ data }) {
           </Text>
           <Wrap spacing={2}>
             {Object.entries(selectedProduct.features).map(([feature, status]) => 
-              status !== 'unknown' ? (
+              status !== null ? (
                 <WrapItem key={feature}>
                   <Tag 
                     colorScheme={getFeatureTagColor(status)}
