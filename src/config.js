@@ -29,6 +29,7 @@ export const imageMap = {
   'QEMU': 'images/qemu.png',
   'HiFive Premier P550': 'images/hifive-premier-p550.avif',
   'Unmatched': 'images/unmatched.avif',
+  'Framework': 'images/framework.png',
 };
 
 export const mdMap = {
