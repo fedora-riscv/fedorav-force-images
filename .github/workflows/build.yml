@@ -64,11 +64,11 @@ jobs:
 #        asset_path: build.zip
 #        asset_name: build.zip
 #        asset_content_type: application/zip
-        
-    - name: Publish build to remote host
-      run: |
-        mkdir -m 0700 ~/.ssh
-        echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 0400 ~/.ssh/id_rsa
-        ssh-keyscan -p ${{ secrets.SERVER_PORT }} ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
-        rsync -av --delete build/ -e "${{ secrets.SERVER_ENV }}" ${{ secrets.SERVER_PATH }}
+
+    # - name: Publish build to remote host
+    #   run: |
+    #     mkdir -m 0700 ~/.ssh
+    #     echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/id_rsa
+    #     chmod 0400 ~/.ssh/id_rsa
+    #     ssh-keyscan -p ${{ secrets.SERVER_PORT }} ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+    #     rsync -av --delete build/ -e "${{ secrets.SERVER_ENV }}" ${{ secrets.SERVER_PATH }}
