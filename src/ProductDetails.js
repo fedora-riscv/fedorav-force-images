@@ -229,7 +229,7 @@ export default function ProductDetails({ data }) {
       )}
       <Box width="100%">
         <Text fontSize="lg" fontWeight="bold" mt={4} color="#444">
-          Images:
+          Spins:
         </Text>
         <List spacing={2} mt={2}>
           {selectedProduct.images.length > 0 ? (
