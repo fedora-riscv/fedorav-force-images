@@ -38,6 +38,6 @@ export const mdMap = {
 };
 
 export const testReportMap = {
-  'DC-ROMA I': 'https://github.com/fedora-riscv/test-reports/blob/main/roma-i/index.md',
-  'DC-ROMA II': 'https://github.com/fedora-riscv/test-reports/blob/main/roma-ii/index.md',
+  'DC-ROMA I': 'https://blog.fedoravforce.com/test-reports/roma-i/',
+  'DC-ROMA II': 'https://blog.fedoravforce.com/test-reports/roma-ii/',
 };
