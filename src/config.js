@@ -35,6 +35,7 @@ export const imageMap = {
 export const mdMap = {
   "Jupiter": raw('./md/jupiter.md'),
   'EIC7700-EVB': raw('./md/eswin.md'),
+  'LicheePi 4A': raw('./md/licheepi4a.md'),
 };
 
 export const testReportMap = {
