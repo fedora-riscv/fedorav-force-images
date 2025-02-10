@@ -276,6 +276,12 @@ export default function ProductDetails({ data }) {
                         </Popover>
                       </HStack>
                     )}
+
+                    {image.latest_updated && (
+                      <Text fontSize="sm" color="gray.600">
+                        Latest Updated: {image.latest_updated}
+                      </Text>
+                    )}
                   </VStack>
                 ) : (
                   <Text color="#444">
