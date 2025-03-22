@@ -277,11 +277,41 @@ export default function ProductDetails({ data }) {
                       </HStack>
                     )}
 
-                    {image.latest_updated && (
+                    <HStack spacing={2} alignItems="center">
                       <Text fontSize="sm" color="gray.600">
+                        More Image Details:
+                      </Text>
+                      <Popover>
+                        <PopoverTrigger>
+                          <InfoIcon />
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <PopoverArrow />
+                          <PopoverCloseButton />
+                          <PopoverHeader>More details</PopoverHeader>
+                          <PopoverBody>
+                            <OrderedList>
+                              {image.latest_updated && (
+                                <Text>
                         Latest Updated: {image.latest_updated}
+                                </Text>
+                              )}
+
+                              {image.release && (
+                                <Text>Fedora Release: {image.release}</Text>
+                              )}
+
+                              {image.changelog && image.changelog != "" && (
+                                <Text whiteSpace={"pre-line"} marginTop={2}>
+                                  Changelog: <br />
+                                  {image.changelog}
                       </Text>
                     )}
+                            </OrderedList>
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </HStack>
                   </VStack>
                 ) : (
                   <Text color="#444">
@@ -331,15 +361,6 @@ export default function ProductDetails({ data }) {
           </Link>
         </Box>
       )}
-
-      <Box>
-        <Text fontSize="lg" fontWeight="bold" mt={4} color="#444">
-          Changelog:
-        </Text>
-        <Text whiteSpace='pre-wrap'>
-          {selectedProduct.changelog === '' ? 'None' : selectedProduct.changelog}
-        </Text>
-      </Box>
 
       <Box width="100%">
         <Text fontSize="lg" fontWeight="bold" mt={4} mb={4} color="#444">
