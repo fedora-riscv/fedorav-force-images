@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { Box, VStack, Heading, Divider, Image, HStack, Text, Link, Badge, List, ListItem, Button, UnorderedList, OrderedList, Code, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverHeader, PopoverBody, Wrap, WrapItem, Tag, TagLabel } from "@chakra-ui/react";
-import { ExternalLinkIcon, DownloadIcon, InfoIcon, CopyIcon } from "@chakra-ui/icons";
+import { ExternalLinkIcon, DownloadIcon, InfoIcon, CopyIcon, RepeatClockIcon } from "@chakra-ui/icons";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from 'rehype-raw';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -301,9 +301,19 @@ export default function ProductDetails({ data }) {
                                 <Text>Fedora Release: {image.release}</Text>
                               )}
 
+                              {image.link && (
+                                <Text>History Spins: 
+                                  <Link href={new URL(image.link.substring(0, image.link.lastIndexOf('/') + 1))} marginLeft={2}>
+                                    <RepeatClockIcon />
+                                  </Link>
+                                </Text>
+                              )}
+
                               {image.changelog && image.changelog != "" && (
                                 <Text whiteSpace={"pre-line"} marginTop={2}>
-                                  Changelog: <br />
+                                  Changelog: 
+                                  
+                                   <br />
                                   {image.changelog}
                       </Text>
                     )}
