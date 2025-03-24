@@ -279,7 +279,7 @@ export default function ProductDetails({ data }) {
 
                     <HStack spacing={2} alignItems="center">
                       <Text fontSize="sm" color="gray.600">
-                        More Image Details:
+                        More Spin Details:
                       </Text>
                       <Popover>
                         <PopoverTrigger>
