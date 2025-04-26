@@ -36,7 +36,7 @@ export const mdMap = {
   "Jupiter": raw('./md/jupiter.md'),
   'EIC7700-EVB': raw('./md/eswin.md'),
   'Megrez': raw('./md/eswin.md'),
-  'HiFive Premier P550': raw('./md/p550.md'),
+  'HiFive Premier P550': raw('./md/eswin.md'),
   'LicheePi 4A': raw('./md/licheepi4a.md'),
 };
 
