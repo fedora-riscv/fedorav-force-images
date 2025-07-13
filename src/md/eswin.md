@@ -187,6 +187,6 @@ es_burn write 0x90000000 flash;
 
 断电，将boot的开关拨至0100，保持SD卡插入并重启开发板，可以正常进入系统
 
-![diagram](md/eswin/diagram.png)
+![diagram](md/eswin/diagram.webp)
 
 </details>

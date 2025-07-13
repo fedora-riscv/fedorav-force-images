@@ -48,11 +48,11 @@ function App() {
             alignItems="center"
             borderRadius="md"
           >
-            <img src="images/fvf-logo.png" alt="Fedora-V Force Logo" width="5%" />
+            <img src="images/fvf-logo.webp" alt="Fedora-V Force Logo" width="5%" />
             <Heading mx={4} size="lg" color="#444">
               Fedora-V Force Images
             </Heading>
-            <img src="images/fedora-remix.png" alt="Fedora Remix" width="5%" />
+            <img src="images/fedora-remix.webp" alt="Fedora Remix" width="5%" />
           </Flex>
           <Flex direction={["column", "column", "row"]}>
             <Box>

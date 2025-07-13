@@ -4,9 +4,9 @@
 
 SoC Uart is located at the top right corner of the board, as shown in the images below.
 
-![Jupiter interface](md/jupiter/interface.png)
+![Jupiter interface](md/jupiter/interface.webp)
 
-![Jupiter uart detail](md/jupiter/uart-detail.png)
+![Jupiter uart detail](md/jupiter/uart-detail.webp)
 
 </details>
 
