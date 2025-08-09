@@ -41,6 +41,7 @@ export const mdMap = {
   'Megrez': raw('./md/eswin.md'),
   'HiFive Premier P550': raw('./md/eswin.md'),
   'LicheePi 4A': raw('./md/licheepi4a.md'),
+  'QEMU': raw('./md/qemu.md'),
 };
 
 export const testReportMap = {
