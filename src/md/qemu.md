@@ -10,7 +10,7 @@
 
 首先，你需要安装 qemu-system-riscv64 和 edk2-riscv64 这两个软件包。在 Fedora 系统中，你可以使用 dnf 命令来安装它们：
 
-```
+```bash
 sudo dnf install qemu-system-riscv64 edk2-riscv64
 ```
 
