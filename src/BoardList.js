@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Heading, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, List, ListItem, Button, Link } from "@chakra-ui/react";
+import { Box, Heading, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, List, ListItem, Button, Link, Badge } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { Link as RouterLink } from "react-router-dom";
 
@@ -45,6 +45,11 @@ export default function BoardList({ data }) {
                         >
                           {product.name}
                         </Button>
+                        { product["new_product"] ? 
+                          <Badge colorScheme="blue" variant="solid" style={{marginLeft: 5}}>
+                            New
+                          </Badge> : <></>
+                        }
                       </ListItem>
                     ))}
                   </List>
