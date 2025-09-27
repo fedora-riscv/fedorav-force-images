@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Box, VStack, Heading, Divider, Image, HStack, Text, Link, Badge, List, ListItem, Button, UnorderedList, OrderedList, Code, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverHeader, PopoverBody, Wrap, WrapItem, Tag, TagLabel } from "@chakra-ui/react";
+import { Box, VStack, Heading, Divider, Image, HStack, Text, Link, Badge, List, ListItem, Button, UnorderedList, OrderedList, Code, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverHeader, PopoverBody, Wrap, WrapItem, Tag, TagLabel, Flex } from "@chakra-ui/react";
 import { ExternalLinkIcon, DownloadIcon, InfoIcon, CopyIcon, RepeatClockIcon } from "@chakra-ui/icons";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from 'rehype-raw';

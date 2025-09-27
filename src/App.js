@@ -15,6 +15,7 @@ import ProductDetails from "./ProductDetails";
 import { formatDate } from "./utils";
 import HowToBurnImagesToSDCards from "./HowToBurnImagesToSDCards";
 import HelpList from "./HelpList";
+import RecentUpdates from "./RecentUpdates";
 
 function App() {
   const [data, setData] = useState(null);
@@ -54,6 +55,7 @@ function App() {
             </Heading>
             <img src="images/fedora-remix.webp" alt="Fedora Remix" width="5%" />
           </Flex>
+          <RecentUpdates data={data} />
           <Flex direction={["column", "column", "row"]}>
             <Box>
               <HelpList />
