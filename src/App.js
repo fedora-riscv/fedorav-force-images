@@ -16,6 +16,7 @@ import HowToBurnImagesToSDCards from "./HowToBurnImagesToSDCards";
 import HelpList from "./HelpList";
 import RecentUpdates from "./RecentUpdates";
 import HomePage from "./HomePage";
+import VendorDetails from "./VendorDetails";
 
 function App() {
   const [data, setData] = useState(null);
@@ -53,11 +54,11 @@ function App() {
             _hover={{ boxShadow: "md", transform: "translateY(-1px)" }}
             transition="all 0.2s"
           >
-            <img src="images/fvf-logo.webp" alt="Fedora-V Force Logo" width="5%" />
+            <img src="/images/fvf-logo.webp" alt="Fedora-V Force Logo" width="5%" />
             <Heading mx={4} size="lg" color="#444">
               Fedora-V Force Images
             </Heading>
-            <img src="images/fedora-remix.webp" alt="Fedora Remix" width="5%" />
+            <img src="/images/fedora-remix.webp" alt="Fedora Remix" width="5%" />
           </Flex>
           <RecentUpdates data={data} />
           <Flex direction={["column", "column", "row"]}>
@@ -74,6 +75,9 @@ function App() {
                   <Flex align="center" justify="center" direction="column" p={6}>
                       <HowToBurnImagesToSDCards />
                   </Flex>
+                } />
+                <Route path="/vendor/:vendorName" element={
+                  <VendorDetails data={data} />
                 } />
                 <Route path="/:productName" element={
                   <ProductDetails data={data} />

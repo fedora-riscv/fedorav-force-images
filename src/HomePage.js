@@ -104,11 +104,15 @@ export default function HomePage({ data }) {
           {data.result.map((category, index) => (
             <Box
               key={index}
+              as={RouterLink}
+              to={`/vendor/${encodeURIComponent(category.name)}`}
               p={4}
               border="1px"
               borderColor="gray.200"
               borderRadius="md"
-              _hover={{ bg: "gray.50" }}
+              _hover={{ bg: "gray.50", textDecoration: "none", transform: "translateY(-2px)", boxShadow: "md" }}
+              transition="all 0.2s"
+              cursor="pointer"
             >
               <Flex justify="space-between" align="center" mb={2}>
                 <Heading size="sm" color="#444">

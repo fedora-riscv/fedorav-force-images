@@ -28,7 +28,7 @@ export default function HowToBurnImagesToSDCards() {
             title: "Download Fedora Image",
             description: "Choose your preferred desktop environment",
             content: "Visit the images portal to download the latest Fedora RISC-V image. GNOME and XFCE desktop environments are available.",
-            image: "images/burn-images-to-sd-01.webp",
+            image: "/images/burn-images-to-sd-01.webp",
             links: [
                 { text: "Download Images", url: "https://images.fedoravforce.org", icon: DownloadIcon }
             ]
@@ -37,7 +37,7 @@ export default function HowToBurnImagesToSDCards() {
             title: "Get balenaEtcher",
             description: "Cross-platform image flashing tool",
             content: "Download and install balenaEtcher, a reliable tool for flashing OS images to SD cards and USB drives.",
-            image: "images/burn-images-to-sd-02.webp",
+            image: "/images/burn-images-to-sd-02.webp",
             links: [
                 { text: "Download balenaEtcher", url: "https://etcher.balena.io", icon: DownloadIcon }
             ]
@@ -46,20 +46,20 @@ export default function HowToBurnImagesToSDCards() {
             title: "Select Image File",
             description: "Load your downloaded image",
             content: "Open balenaEtcher and click 'Flash from file' to select the Fedora image you downloaded.",
-            image: "images/burn-images-to-sd-03.webp",
-            images: ["images/burn-images-to-sd-03.webp", "images/burn-images-to-sd-04.webp"]
+            image: "/images/burn-images-to-sd-03.webp",
+            images: ["/images/burn-images-to-sd-03.webp", "/images/burn-images-to-sd-04.webp"]
         },
         {
             title: "Choose Target Device",
             description: "Select your SD card",
             content: "Insert your SD card and click 'Select target' to choose it as the destination device.",
-            images: ["images/burn-images-to-sd-05.webp", "images/burn-images-to-sd-06.webp"]
+            images: ["/images/burn-images-to-sd-05.webp", "/images/burn-images-to-sd-06.webp"]
         },
         {
             title: "Flash the Image",
             description: "Write image to SD card",
             content: "Click 'Flash' to begin writing the image to your SD card. This process may take several minutes.",
-            image: "images/burn-images-to-sd-07.webp"
+            image: "/images/burn-images-to-sd-07.webp"
         }
     ];
 
