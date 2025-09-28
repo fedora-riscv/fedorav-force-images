@@ -225,7 +225,6 @@ export default function ProductDetails({ data }) {
                   maxH="300px"
                   objectFit="contain"
                   borderRadius="lg"
-                  boxShadow="md"
                 />
               )}
             </Box>
