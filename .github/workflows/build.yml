@@ -40,31 +40,7 @@ jobs:
       with:
         name: build-artifact
         path: build
-
-#    - name: Zip build files
-#      run: zip -r build.zip build
-#
-#    - name: Create GitHub Release
-#      id: create_release
-#      uses: actions/create-release@v1
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      with:
-#        tag_name: ${{ env.TIMESTAMP }}
-#        release_name: Release ${{ env.TIMESTAMP }}
-#        draft: false
-#        prerelease: false
-#
-#    - name: Upload build to release
-#      uses: actions/upload-release-asset@v1
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      with:
-#        upload_url: ${{ steps.create_release.outputs.upload_url }}
-#        asset_path: build.zip
-#        asset_name: build.zip
-#        asset_content_type: application/zip
-
+        
     - name: Publish build to remote host
       run: |
         mkdir -m 0700 ~/.ssh
