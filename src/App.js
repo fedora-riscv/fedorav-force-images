@@ -15,7 +15,6 @@ import { BrowserRouter as Router, Routes, Route, Link as RouterLink } from "reac
 import { getApiUrl, getPlatformFromDomain, isDomainSpecific } from "./config";
 import BoardList from "./BoardList";
 import ProductDetails from "./ProductDetails";
-import { formatDate } from "./utils";
 import HowToBurnImagesToSDCards from "./HowToBurnImagesToSDCards";
 import HelpList from "./HelpList";
 import RecentUpdates from "./RecentUpdates";
@@ -136,7 +135,7 @@ function App() {
               </Flex>
               <Box textAlign="center" mt={6}>
                 <Text fontSize="sm" color="gray.500" mb={3}>
-                  Last Updated: {formatDate(data.latest_updated)}
+                  Last Updated: {new Date(data.latest_updated * 1000).toLocaleString()}
                 </Text>
 
                 <Box display="inline-block" bg="white" p={2} borderRadius="lg" boxShadow="md">

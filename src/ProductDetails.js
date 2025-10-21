@@ -57,7 +57,6 @@ import rehypeRaw from 'rehype-raw';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { imageMap, mdMap, testReportMap } from "./config";
-import { formatDate } from "./utils";
 import Giscus from '@giscus/react';
 
 export default function ProductDetails({ data }) {
@@ -294,7 +293,7 @@ export default function ProductDetails({ data }) {
                                         <HStack spacing={1}>
                                           <Icon as={TimeIcon} color="gray.500" />
                                           <Text fontSize="sm" color="gray.600">
-                                            {formatDate(image.latest_updated)}
+                                            {new Date(image.latest_updated).toLocaleDateString()}
                                           </Text>
                                         </HStack>
                                       )}

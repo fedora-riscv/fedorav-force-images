@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, Heading, HStack, Text, Badge, Link, VStack, Flex, Image, SimpleGrid } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
-import { formatDate } from "./utils";
 import { imageMap } from "./config";
 
 export default function RecentUpdates({ data }) {
@@ -32,7 +31,12 @@ export default function RecentUpdates({ data }) {
 
   // Sort by latest_updated timestamp (most recent first) and take top 3
   const recentImages = allImages
-    .sort((a, b) => (b.latest_updated || 0) - (a.latest_updated || 0))
+    .sort((a, b) => {
+      // Convert date strings to timestamps for comparison
+      const dateA = new Date(a.latest_updated).getTime() || 0;
+      const dateB = new Date(b.latest_updated).getTime() || 0;
+      return dateB - dateA;
+    })
     .slice(0, 3);
 
   if (recentImages.length === 0) {
@@ -101,7 +105,7 @@ export default function RecentUpdates({ data }) {
               </HStack>
               <VStack align="end" spacing={1}>
                 <Text fontSize="xs" fontWeight="medium" color="#444">
-                  {formatDate(image.latest_updated)}
+                  {new Date(image.latest_updated).toLocaleDateString()}
                 </Text>
                 {image.release && (
                   <Badge colorScheme="green" variant="outline" fontSize="xs">
