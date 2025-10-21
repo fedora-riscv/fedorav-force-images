@@ -1,6 +1,25 @@
 import raw from "raw.macro";
 
-export const apiUrl = 'https://api.fedoravforce.org/stats/?platform=arm';
+export const getPlatformFromDomain = () => {
+  const hostname = window.location.hostname;
+
+  if (hostname === 'images.arm.fedoravforce.org') {
+    return 'arm';
+  } else if (hostname === 'images.fedoravforce.org') {
+    return 'riscv';
+  }
+
+  return localStorage.getItem('platform') || 'riscv';
+};
+
+export const isDomainSpecific = () => {
+  const hostname = window.location.hostname;
+  return hostname === 'images.fedoravforce.org' || hostname === 'images.arm.fedoravforce.org';
+};
+
+export const getApiUrl = (platform) => {
+  return `https://api.fedoravforce.org/stats/?platform=${platform}`;
+};
 
 export const imageMap = {
   'BeagleV Ahead': '/images/beaglev-ahead.webp',

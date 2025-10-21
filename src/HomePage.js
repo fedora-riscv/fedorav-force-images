@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Box, Heading, Text, VStack, Stat, StatLabel, StatNumber, Button, SimpleGrid, Badge, Flex } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
+import { PlatformContext } from "./App";
 
 export default function HomePage({ data }) {
+  const { platform } = useContext(PlatformContext);
+
   if (!data || !data.result) {
     return null;
   }
@@ -29,6 +32,8 @@ export default function HomePage({ data }) {
 
   const categories = data.result.length;
 
+  const platformName = platform === 'arm' ? 'ARM' : 'RISC-V';
+
   return (
     <VStack spacing={8} align="stretch" p={6}>
       <Box textAlign="center">
@@ -36,8 +41,8 @@ export default function HomePage({ data }) {
           Welcome to Fedora-V Force Images
         </Heading>
         <Text fontSize="lg" color="gray.600" maxW="600px" mx="auto">
-          Your gateway to RISC-V development board images. Browse, download, and deploy
-          Fedora Linux images optimized for various RISC-V hardware platforms.
+          Your gateway to {platformName} development board images. Browse, download, and deploy
+          Fedora Linux images optimized for various {platformName} hardware platforms.
         </Text>
       </Box>
 
