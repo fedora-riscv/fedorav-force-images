@@ -57,6 +57,7 @@ export const imageMap = {
   "HD-RK3576-PI": "/images/HD-RK3576-PI.jpeg",
   "Fogwise AIRbox Q900": "/images/fogwise-airbox-q900.webp",
   "Radxa Dragon Q6A": "/images/radxa-dragon-q6a.webp",
+  "A210": "/images/zhihe-a210.webp"
 };
 
 export const mdMap = {
