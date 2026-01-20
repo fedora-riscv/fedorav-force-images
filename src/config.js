@@ -67,6 +67,7 @@ export const mdMap = {
   'HiFive Premier P550': raw('./md/eswin.md'),
   'LicheePi 4A': raw('./md/licheepi4a.md'),
   'QEMU': raw('./md/qemu.md'),
+  "A210": raw('./md/a210.md'),
 };
 
 export const testReportMap = {
