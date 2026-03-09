@@ -1,6 +1,20 @@
 import React, { useState, useMemo } from "react";
-import { Box, Heading, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, List, ListItem, Button, Link, Badge, Input, InputGroup, InputLeftElement, VStack } from "@chakra-ui/react";
-import { ExternalLinkIcon, SearchIcon } from "@chakra-ui/icons";
+import {
+  Box,
+  Heading,
+  Button,
+  Link,
+  Badge,
+  Input,
+  VStack,
+  AccordionRoot,
+  AccordionItem,
+  AccordionItemTrigger,
+  AccordionItemContent,
+  AccordionItemIndicator,
+  List,
+} from "@chakra-ui/react";
+import { Search, ExternalLink } from "lucide-react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
 export default function BoardList({ data }) {
@@ -11,7 +25,6 @@ export default function BoardList({ data }) {
     navigate(`/vendor/${encodeURIComponent(categoryName)}`);
   };
 
-  // Filter data based on search term
   const filteredData = useMemo(() => {
     if (!searchTerm.trim()) {
       return data.result;
@@ -42,13 +55,14 @@ export default function BoardList({ data }) {
       mr={[0, 0, 6]}
       mb={[6, 6, 0]}
     >
-      <VStack spacing={4} align="stretch">
-        {/* Search Input */}
-        <InputGroup size="sm">
-          <InputLeftElement pointerEvents="none">
-            <SearchIcon color="gray.300" />
-          </InputLeftElement>
+      <VStack gap={4} align="stretch">
+        <Box position="relative">
+          <Box position="absolute" left="3" top="50%" transform="translateY(-50%)" zIndex="1" pointerEvents="none" color="gray.300">
+            <Search size={14} />
+          </Box>
           <Input
+            size="sm"
+            pl="9"
             placeholder="Search boards..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -61,13 +75,14 @@ export default function BoardList({ data }) {
               boxShadow: "0 0 0 1px rgba(66, 153, 225, 0.6)"
             }}
           />
-        </InputGroup>
+        </Box>
 
-        {/* Board List */}
         <Box>
           {filteredData.length === 0 && searchTerm.trim() ? (
             <Box p={4} textAlign="center">
-              <SearchIcon color="gray.300" mb={2} />
+              <Box color="gray.300" mb={2}>
+                <Search size={16} />
+              </Box>
               <Box fontSize="sm" color="gray.500">
                 No boards found matching "{searchTerm}"
               </Box>
@@ -77,8 +92,8 @@ export default function BoardList({ data }) {
               <Box key={index} mb={4}>
                 <Heading size="sm" mb={2} color="#444">
                   {category.link ? (
-                    <Link href={category.link} isExternal>
-                      {category.name} <ExternalLinkIcon mx="2px" />
+                    <Link href={category.link} target="_blank" rel="noopener noreferrer">
+                      {category.name} <ExternalLink size={12} style={{display: "inline", verticalAlign: "middle"}} />
                     </Link>
                   ) : (
                     <Link
@@ -92,41 +107,44 @@ export default function BoardList({ data }) {
                   )}
                 </Heading>
                 {category.soc.map((subCategory, subIndex) => (
-                  <Accordion allowToggle key={subIndex}>
-                    <AccordionItem>
-                      <AccordionButton onClick={() => handleVendorClick(category.name)}>
+                  <AccordionRoot collapsible key={subIndex}>
+                    <AccordionItem value={subCategory.name}>
+                      <AccordionItemTrigger onClick={() => handleVendorClick(category.name)} cursor="pointer">
                         <Box flex="1" textAlign="left" color="#444">
                           {subCategory.name}
                           {searchTerm.trim() && (
-                            <Badge ml={2} colorScheme="blue" variant="outline" fontSize="xs">
+                            <Badge ml={2} colorPalette="blue" variant="outline" fontSize="xs">
                               {subCategory.boards.length}
                             </Badge>
                           )}
                         </Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                      <AccordionPanel pb={4}>
-                        <List spacing={2}>
+                        <AccordionItemIndicator />
+                      </AccordionItemTrigger>
+                      <AccordionItemContent pb={4}>
+                        <List.Root gap={2} listStyle="none">
                           {subCategory.boards.map((product, productIndex) => (
-                            <ListItem key={productIndex}>
+                            <List.Item key={productIndex}>
                               <Button
-                                variant="link"
-                                as={RouterLink}
-                                to={`/${product.name}`}
+                                asChild
+                                variant="plain"
+                                size="sm"
+                                color="teal.500"
                               >
-                                {product.name}
+                                <RouterLink to={`/${product.name}`}>
+                                  {product.name}
+                                </RouterLink>
                               </Button>
                               {product["new_product"] && (
-                                <Badge colorScheme="blue" variant="solid" style={{marginLeft: 5}}>
+                                <Badge colorPalette="blue" variant="solid" style={{marginLeft: 5}}>
                                   New
                                 </Badge>
                               )}
-                            </ListItem>
+                            </List.Item>
                           ))}
-                        </List>
-                      </AccordionPanel>
+                        </List.Root>
+                      </AccordionItemContent>
                     </AccordionItem>
-                  </Accordion>
+                  </AccordionRoot>
                 ))}
               </Box>
             ))

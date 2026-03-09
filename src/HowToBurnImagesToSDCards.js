@@ -5,22 +5,15 @@ import {
   Text,
   VStack,
   HStack,
-  OrderedList,
-  ListItem,
   Link,
   Image,
   Badge,
   Button,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
-  Divider,
+  Separator,
   SimpleGrid,
-  Icon,
   Flex
 } from "@chakra-ui/react";
-import { ExternalLinkIcon, DownloadIcon, WarningIcon, CheckCircleIcon } from "@chakra-ui/icons";
+import { ExternalLink, Download, TriangleAlert, CircleCheck, Info } from "lucide-react";
 
 export default function HowToBurnImagesToSDCards() {
     const steps = [
@@ -30,7 +23,7 @@ export default function HowToBurnImagesToSDCards() {
             content: "Visit the images portal to download the latest Fedora RISC-V image. GNOME and XFCE desktop environments are available.",
             image: "/images/burn-images-to-sd-01.webp",
             links: [
-                { text: "Download Images", url: "https://images.fedoravforce.org", icon: DownloadIcon }
+                { text: "Download Images", url: "https://images.fedoravforce.org", icon: Download }
             ]
         },
         {
@@ -39,7 +32,7 @@ export default function HowToBurnImagesToSDCards() {
             content: "Download and install balenaEtcher, a reliable tool for flashing OS images to SD cards and USB drives.",
             image: "/images/burn-images-to-sd-02.webp",
             links: [
-                { text: "Download balenaEtcher", url: "https://etcher.balena.io", icon: DownloadIcon }
+                { text: "Download balenaEtcher", url: "https://etcher.balena.io", icon: Download }
             ]
         },
         {
@@ -64,7 +57,7 @@ export default function HowToBurnImagesToSDCards() {
     ];
 
     return (
-        <VStack spacing={8} align="stretch">
+        <VStack gap={8} align="stretch">
             <Box textAlign="center">
                 <Heading size="xl" color="#444" mb={4}>
                     How to Flash Images to SD Cards
@@ -75,40 +68,42 @@ export default function HowToBurnImagesToSDCards() {
                 </Text>
             </Box>
 
-            <Alert status="info" borderRadius="md">
-                <AlertIcon />
-                <Box>
-                    <AlertTitle>Before You Start</AlertTitle>
-                    <AlertDescription>
-                        Make sure you have an SD card with at least 8GB capacity and a reliable internet connection.
-                        Back up any important data on the SD card as it will be completely overwritten.
-                    </AlertDescription>
-                </Box>
-            </Alert>
+            <Box bg="blue.50" p={4} borderRadius="md">
+                <Flex align="center" gap={3}>
+                    <Box color="blue.500"><Info size={20} /></Box>
+                    <Box>
+                        <Text fontWeight="bold">Before You Start</Text>
+                        <Text fontSize="sm" color="gray.600">
+                            Make sure you have an SD card with at least 8GB capacity and a reliable internet connection.
+                            Back up any important data on the SD card as it will be completely overwritten.
+                        </Text>
+                    </Box>
+                </Flex>
+            </Box>
 
-            <SimpleGrid columns={[1, 1, 2]} spacing={6} mb={6}>
-                <Box p={6} border="1px" borderColor="gray.200" borderRadius="md">
+            <SimpleGrid columns={[1, 1, 2]} gap={6} mb={6}>
+                <Box p={6} border="1px solid" borderColor="gray.200" borderRadius="md">
                     <HStack mb={3}>
-                        <Icon as={CheckCircleIcon} color="green.500" />
+                        <Box color="green.500"><CircleCheck size={16} /></Box>
                         <Heading size="sm" color="#444">Requirements</Heading>
                     </HStack>
-                    <VStack align="start" spacing={2}>
-                        <Text fontSize="sm">• SD card (8GB+ recommended)</Text>
-                        <Text fontSize="sm">• Computer with SD card reader</Text>
-                        <Text fontSize="sm">• Internet connection</Text>
-                        <Text fontSize="sm">• balenaEtcher software</Text>
+                    <VStack align="start" gap={2}>
+                        <Text fontSize="sm">SD card (8GB+ recommended)</Text>
+                        <Text fontSize="sm">Computer with SD card reader</Text>
+                        <Text fontSize="sm">Internet connection</Text>
+                        <Text fontSize="sm">balenaEtcher software</Text>
                     </VStack>
                 </Box>
-                <Box p={6} border="1px" borderColor="gray.200" borderRadius="md">
+                <Box p={6} border="1px solid" borderColor="gray.200" borderRadius="md">
                     <HStack mb={3}>
-                        <Icon as={WarningIcon} color="orange.500" />
+                        <Box color="orange.500"><TriangleAlert size={16} /></Box>
                         <Heading size="sm" color="#444">Important Notes</Heading>
                     </HStack>
-                    <VStack align="start" spacing={2}>
-                        <Text fontSize="sm">• All data on SD card will be erased</Text>
-                        <Text fontSize="sm">• Flashing process may take 10-30 minutes</Text>
-                        <Text fontSize="sm">• Don't remove SD card during flashing</Text>
-                        <Text fontSize="sm">• Verify MD5 checksum if available</Text>
+                    <VStack align="start" gap={2}>
+                        <Text fontSize="sm">All data on SD card will be erased</Text>
+                        <Text fontSize="sm">Flashing process may take 10-30 minutes</Text>
+                        <Text fontSize="sm">Don't remove SD card during flashing</Text>
+                        <Text fontSize="sm">Verify MD5 checksum if available</Text>
                     </VStack>
                 </Box>
             </SimpleGrid>
@@ -118,19 +113,18 @@ export default function HowToBurnImagesToSDCards() {
                     Step-by-Step Instructions
                 </Heading>
 
-                <VStack spacing={8}>
+                <VStack gap={8}>
                     {steps.map((step, index) => (
                         <Box key={index} w="100%">
                             <Flex
                                 direction={["column", "column", index % 2 === 0 ? "row" : "row-reverse"]}
                                 align="center"
-                                spacing={8}
                                 gap={8}
                             >
-                                <VStack align="start" spacing={4} flex="1">
+                                <VStack align="start" gap={4} flex="1">
                                     <HStack>
                                         <Badge
-                                            colorScheme="blue"
+                                            colorPalette="blue"
                                             variant="solid"
                                             fontSize="md"
                                             px={3}
@@ -153,20 +147,20 @@ export default function HowToBurnImagesToSDCards() {
                                     </Text>
 
                                     {step.links && (
-                                        <VStack align="start" spacing={2}>
+                                        <VStack align="start" gap={2}>
                                             {step.links.map((link, linkIndex) => (
                                                 <Button
                                                     key={linkIndex}
-                                                    as={Link}
-                                                    href={link.url}
-                                                    isExternal
-                                                    leftIcon={<Icon as={link.icon} />}
-                                                    rightIcon={<ExternalLinkIcon />}
-                                                    colorScheme="blue"
+                                                    asChild
+                                                    colorPalette="blue"
                                                     size="sm"
                                                     variant="outline"
                                                 >
-                                                    {link.text}
+                                                    <a href={link.url} target="_blank" rel="noopener noreferrer">
+                                                        <link.icon size={14} />
+                                                        {link.text}
+                                                        <ExternalLink size={14} />
+                                                    </a>
                                                 </Button>
                                             ))}
                                         </VStack>
@@ -175,7 +169,7 @@ export default function HowToBurnImagesToSDCards() {
 
                                 <Box flex="1">
                                     {step.images ? (
-                                        <SimpleGrid columns={[1, 2]} spacing={4}>
+                                        <SimpleGrid columns={[1, 2]} gap={4}>
                                             {step.images.map((img, imgIndex) => (
                                                 <Image
                                                     key={imgIndex}
@@ -198,22 +192,24 @@ export default function HowToBurnImagesToSDCards() {
                                     )}
                                 </Box>
                             </Flex>
-                            {index < steps.length - 1 && <Divider mt={8} />}
+                            {index < steps.length - 1 && <Separator mt={8} />}
                         </Box>
                     ))}
                 </VStack>
             </Box>
 
-            <Alert status="success" borderRadius="md">
-                <AlertIcon />
-                <Box>
-                    <AlertTitle>You're Done!</AlertTitle>
-                    <AlertDescription>
-                        Your SD card is now ready to boot on your RISC-V development board.
-                        Insert it into your board and power it on to start using Fedora Linux.
-                    </AlertDescription>
-                </Box>
-            </Alert>
+            <Box bg="green.50" p={4} borderRadius="md">
+                <Flex align="center" gap={3}>
+                    <Box color="green.500"><CircleCheck size={20} /></Box>
+                    <Box>
+                        <Text fontWeight="bold">You're Done!</Text>
+                        <Text fontSize="sm" color="gray.600">
+                            Your SD card is now ready to boot on your RISC-V development board.
+                            Insert it into your board and power it on to start using Fedora Linux.
+                        </Text>
+                    </Box>
+                </Flex>
+            </Box>
 
             <Box textAlign="center" p={6} bg="gray.50" borderRadius="md">
                 <Heading size="md" color="#444" mb={3}>

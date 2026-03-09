@@ -40,3 +40,7 @@ packages/react-devtools-timeline/dist
 .vercel
 package-lock.json
 yarn.lock
+
+# Project docs (local only)
+CLAUDE.md
+doc/
