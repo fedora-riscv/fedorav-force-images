@@ -1,37 +1,34 @@
 {
   "name": "fedora-v-force-images",
   "version": "1.0.0",
+  "private": true,
+  "type": "module",
   "description": "",
   "keywords": [],
-  "main": "src/index.tsx",
   "dependencies": {
     "@chakra-ui/react": "^3.34.0",
     "@emotion/react": "^11.14.0",
     "@giscus/react": "^3.1.0",
-    "lucide-react": "^0.468.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "lucide-react": "^1.7.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "react-markdown": "^9.1.0",
-    "react-router-dom": "^7.13.1",
-    "react-scripts": "^5.0.1",
-    "react-syntax-highlighter": "^15.6.6",
+    "react-router-dom": "^7.14.0",
+    "react-syntax-highlighter": "^16.1.1",
     "rehype-raw": "^7.0.0"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@types/react": "^19.1.0",
-    "@types/react-dom": "^19.1.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
     "@types/react-syntax-highlighter": "^15.5.13",
-    "babel-plugin-macros": "^3.1.0",
-    "loader-utils": "3.3.1",
-    "raw.macro": "^0.6.2",
-    "typescript": "^5.9.3"
+    "@vitejs/plugin-react": "^4.5.0",
+    "typescript": "^5.9.0",
+    "vite": "^6.3.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "browserslist": [
     ">0.2%",

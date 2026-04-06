@@ -1,4 +1,8 @@
-import raw from "raw.macro";
+import jupiterMd from './md/jupiter.md?raw';
+import eswinMd from './md/eswin.md?raw';
+import licheepi4aMd from './md/licheepi4a.md?raw';
+import qemuMd from './md/qemu.md?raw';
+import a210Md from './md/a210.md?raw';
 
 export const getPlatformFromDomain = () => {
   const hostname = window.location.hostname;
@@ -64,13 +68,13 @@ export const imageMap = {
 };
 
 export const mdMap = {
-  'Jupiter': raw('./md/jupiter.md'),
-  'EIC7700-EVB': raw('./md/eswin.md'),
-  'Megrez': raw('./md/eswin.md'),
-  'HiFive Premier P550': raw('./md/eswin.md'),
-  'LicheePi 4A': raw('./md/licheepi4a.md'),
-  'QEMU': raw('./md/qemu.md'),
-  "A210": raw('./md/a210.md'),
+  'Jupiter': jupiterMd,
+  'EIC7700-EVB': eswinMd,
+  'Megrez': eswinMd,
+  'HiFive Premier P550': eswinMd,
+  'LicheePi 4A': licheepi4aMd,
+  'QEMU': qemuMd,
+  "A210": a210Md,
 };
 
 export const testReportMap = {

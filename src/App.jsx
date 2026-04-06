@@ -1,7 +1,6 @@
 import React, { useState, useEffect, createContext } from "react";
 import {
   ChakraProvider,
-  defaultSystem,
   Box,
   Flex,
   Heading,
@@ -13,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { BrowserRouter as Router, Routes, Route, Link as RouterLink } from "react-router-dom";
 import { getApiUrl, getPlatformFromDomain, isDomainSpecific } from "./config";
+import { system } from "./theme";
 import BoardList from "./BoardList";
 import ProductDetails from "./ProductDetails";
 import HowToBurnImagesToSDCards from "./HowToBurnImagesToSDCards";
@@ -70,7 +70,7 @@ function App() {
 
   if (isLoading || !data) {
     return (
-      <ChakraProvider value={defaultSystem}>
+      <ChakraProvider value={system}>
         <Flex justifyContent="center" alignItems="center" height="100vh">
           <VStack gap={3}>
             <Spinner borderWidth="3px" width="50px" height="50px" />
@@ -84,7 +84,7 @@ function App() {
   }
 
   return (
-    <ChakraProvider value={defaultSystem}>
+    <ChakraProvider value={system}>
       <PlatformContext.Provider value={{ platform, setPlatform: handlePlatformChange, isSpecificDomain }}>
         <Router>
           <Box p={6} bg="#f4f4f4" minHeight="100vh">
