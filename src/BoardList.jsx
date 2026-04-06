@@ -89,14 +89,14 @@ export default function BoardList({ data }) {
           ) : (
             filteredData.map((category, index) => (
               <Box key={index} mb={4}>
-                <Heading size="sm" mb={2} color="#444">
+                <Heading size="sm" mb={2} color="gray.700">
                   {category.link ? (
                     <Link href={category.link} target="_blank" rel="noopener noreferrer">
                       {category.name} <ExternalLink size={12} style={{display: "inline", verticalAlign: "middle"}} />
                     </Link>
                   ) : (
                     <Link
-                      color="#444"
+                      color="gray.700"
                       _hover={{ color: "teal.500", textDecoration: "underline" }}
                       onClick={() => handleVendorClick(category.name)}
                       cursor="pointer"
@@ -109,7 +109,7 @@ export default function BoardList({ data }) {
                   <AccordionRoot collapsible key={subIndex}>
                     <AccordionItem value={subCategory.name}>
                       <AccordionItemTrigger pl={4} onClick={() => handleVendorClick(category.name)} cursor="pointer" _hover={{ bg: "gray.100" }} borderRadius="md">
-                        <Box flex="1" textAlign="left" color="#444">
+                        <Box flex="1" textAlign="left" color="gray.700">
                           {subCategory.name}
                           {searchTerm.trim() && (
                             <Badge ml={2} colorPalette="blue" variant="outline" fontSize="xs">
@@ -119,8 +119,8 @@ export default function BoardList({ data }) {
                         </Box>
                         <AccordionItemIndicator />
                       </AccordionItemTrigger>
-                      <AccordionItemContent pb={2} pl={6}>
-                        <List.Root gap={1} listStyle="none">
+                      <AccordionItemContent pt={2} pb={2} pl={6}>
+                        <List.Root gap={2} listStyle="none">
                           {subCategory.boards.map((product, productIndex) => (
                             <List.Item key={productIndex}>
                               <Link

@@ -59,7 +59,7 @@ export default function HowToBurnImagesToSDCards() {
     return (
         <VStack gap={8} align="stretch">
             <Box textAlign="center">
-                <Heading size="xl" color="#444" mb={4}>
+                <Heading size="xl" color="gray.700" mb={4}>
                     How to Flash Images to SD Cards
                 </Heading>
                 <Text fontSize="lg" color="gray.600" maxW="600px" mx="auto">
@@ -85,7 +85,7 @@ export default function HowToBurnImagesToSDCards() {
                 <Box p={6} border="1px solid" borderColor="gray.200" borderRadius="md">
                     <HStack mb={3}>
                         <Box color="green.500"><CircleCheck size={16} /></Box>
-                        <Heading size="sm" color="#444">Requirements</Heading>
+                        <Heading size="sm" color="gray.700">Requirements</Heading>
                     </HStack>
                     <VStack align="start" gap={2}>
                         <Text fontSize="sm">SD card (8GB+ recommended)</Text>
@@ -97,7 +97,7 @@ export default function HowToBurnImagesToSDCards() {
                 <Box p={6} border="1px solid" borderColor="gray.200" borderRadius="md">
                     <HStack mb={3}>
                         <Box color="orange.500"><TriangleAlert size={16} /></Box>
-                        <Heading size="sm" color="#444">Important Notes</Heading>
+                        <Heading size="sm" color="gray.700">Important Notes</Heading>
                     </HStack>
                     <VStack align="start" gap={2}>
                         <Text fontSize="sm">All data on SD card will be erased</Text>
@@ -109,7 +109,7 @@ export default function HowToBurnImagesToSDCards() {
             </SimpleGrid>
 
             <Box>
-                <Heading size="lg" color="#444" mb={6}>
+                <Heading size="lg" color="gray.700" mb={6}>
                     Step-by-Step Instructions
                 </Heading>
 
@@ -133,7 +133,7 @@ export default function HowToBurnImagesToSDCards() {
                                         >
                                             {index + 1}
                                         </Badge>
-                                        <Heading size="md" color="#444">
+                                        <Heading size="md" color="gray.700">
                                             {step.title}
                                         </Heading>
                                     </HStack>
@@ -142,7 +142,7 @@ export default function HowToBurnImagesToSDCards() {
                                         {step.description}
                                     </Text>
 
-                                    <Text color="#444">
+                                    <Text color="gray.700">
                                         {step.content}
                                     </Text>
 
@@ -212,7 +212,7 @@ export default function HowToBurnImagesToSDCards() {
             </Box>
 
             <Box textAlign="center" p={6} bg="gray.50" borderRadius="md">
-                <Heading size="md" color="#444" mb={3}>
+                <Heading size="md" color="gray.700" mb={3}>
                     Need Help?
                 </Heading>
                 <Text color="gray.600">

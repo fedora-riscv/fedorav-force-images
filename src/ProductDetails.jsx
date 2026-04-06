@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
+import { getStatusBadgeColor } from "./utils";
 import {
   Box,
   VStack,
@@ -67,15 +68,6 @@ export default function ProductDetails({ data }) {
     }
   }
 
-  const getStatusBadgeColor = (status) => {
-    switch (status) {
-      case "GA": return "green";
-      case "EOL": return "red";
-      case "DEV": return "yellow";
-      default: return "gray";
-    }
-  };
-
   const getFeatureTagColor = (status) => {
     switch (status.toLowerCase()) {
       case 'ok': return "green";
@@ -120,7 +112,7 @@ export default function ProductDetails({ data }) {
         <SimpleGrid columns={[1, 1, 2]} gap={6}>
           <VStack align="start" gap={4}>
             <HStack gap={3}>
-              <Heading size="xl" color="#444">
+              <Heading size="xl" color="gray.700">
                 {selectedProduct.name}
               </Heading>
               {selectedProduct.new_product && (
@@ -225,7 +217,7 @@ export default function ProductDetails({ data }) {
           <VStack gap={8} align="stretch">
             {selectedProduct.features && Object.keys(selectedProduct.features).length > 0 && (
               <Box>
-                <Heading size="lg" color="#444" mb={6}>
+                <Heading size="lg" color="gray.700" mb={6}>
                   Hardware Features
                 </Heading>
                 <Flex flexWrap="wrap" gap={3}>
@@ -247,13 +239,13 @@ export default function ProductDetails({ data }) {
             )}
 
             <Box>
-              <Heading size="lg" color="#444" mb={6}>
+              <Heading size="lg" color="gray.700" mb={6}>
                 Images & Downloads
               </Heading>
               <VStack gap={6} align="stretch">
                 {availableImages.length > 0 && (
                   <Box>
-                    <Heading size="md" color="#444" mb={4}>
+                    <Heading size="md" color="gray.700" mb={4}>
                       Available Images
                     </Heading>
                     <VStack gap={4}>
@@ -262,7 +254,7 @@ export default function ProductDetails({ data }) {
                           <VStack gap={4} align="stretch">
                             <Flex justify="space-between" align="start" direction={["column", "row"]} gap={4}>
                               <VStack align="start" gap={2} flex="1">
-                                <Heading size="sm" color="#444">
+                                <Heading size="sm" color="gray.700">
                                   {image.name}
                                 </Heading>
                                 <HStack gap={4} flexWrap="wrap">
@@ -359,7 +351,7 @@ export default function ProductDetails({ data }) {
 
                 {unavailableImages.length > 0 && (
                   <Box>
-                    <Heading size="md" color="#444" mb={4}>
+                    <Heading size="md" color="gray.700" mb={4}>
                       Upcoming Images
                     </Heading>
                     <Box bg="blue.50" p={4} borderRadius="md">
@@ -494,7 +486,7 @@ export default function ProductDetails({ data }) {
           <TabsContent value="tests" px={0}>
             <Box borderWidth="1px" borderRadius="md" p={5}>
               <VStack gap={4}>
-                <Heading size="md" color="#444">
+                <Heading size="md" color="gray.700">
                   Test Report
                 </Heading>
                 <Text color="gray.600" textAlign="center">
@@ -512,7 +504,7 @@ export default function ProductDetails({ data }) {
 
         <TabsContent value="discussion" px={0}>
           <Box>
-            <Heading size="md" color="#444" mb={4}>
+            <Heading size="md" color="gray.700" mb={4}>
               Discussion & Support
             </Heading>
             <Giscus

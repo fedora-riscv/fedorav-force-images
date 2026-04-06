@@ -103,7 +103,7 @@ function App() {
             >
               <RouterLink to="/">
                 <img src="/images/fvf-logo.webp" alt="Fedora-V Force Logo" width="5%" />
-                <Heading mx={4} size="lg" color="#444">
+                <Heading mx={4} size="lg" color="gray.700">
                   Fedora-V Force Images For {platform === 'arm' ? 'ARM' : 'RISC-V'}
                 </Heading>
                 <img src="/images/fedora-remix.webp" alt="Fedora Remix" width="5%" />

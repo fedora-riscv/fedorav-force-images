@@ -1,5 +1,7 @@
 import { createSystem, defaultConfig, defineConfig, defineRecipe } from "@chakra-ui/react";
 
+const systemFontStack = '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
+
 // Heading recipe matching Chakra UI v2 size mapping
 const headingRecipe = defineRecipe({
   className: "chakra-heading",
@@ -63,8 +65,8 @@ const config = defineConfig({
     },
     tokens: {
       fonts: {
-        body: { value: '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"' },
-        heading: { value: '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"' },
+        body: { value: systemFontStack },
+        heading: { value: systemFontStack },
       },
       fontSizes: {
         xs: { value: "0.75rem" },

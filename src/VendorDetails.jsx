@@ -1,5 +1,6 @@
 import React from "react";
 import { useParams, Link as RouterLink } from "react-router-dom";
+import { getStatusBadgeColor } from "./utils";
 import {
   Box,
   VStack,
@@ -54,21 +55,12 @@ export default function VendorDetails({ data }) {
     ), 0
   );
 
-  const getStatusBadgeColor = (status) => {
-    switch (status) {
-      case "GA": return "green";
-      case "EOL": return "red";
-      case "DEV": return "yellow";
-      default: return "gray";
-    }
-  };
-
   return (
     <VStack gap={6} align="stretch">
       <Box borderWidth="1px" borderRadius="md" p={5}>
         <VStack align="start" gap={4}>
           <HStack gap={3}>
-            <Heading size="xl" color="#444">
+            <Heading size="xl" color="gray.700">
               {vendorCategory.name}
             </Heading>
             {vendorCategory.link && (
@@ -102,7 +94,7 @@ export default function VendorDetails({ data }) {
       </Box>
 
       <Box>
-        <Heading size="lg" color="#444" mb={6}>
+        <Heading size="lg" color="gray.700" mb={6}>
           SoC Families & Development Boards
         </Heading>
         <VStack gap={6} align="stretch">
@@ -111,7 +103,7 @@ export default function VendorDetails({ data }) {
               <VStack gap={4} align="stretch">
                 <HStack justify="space-between" align="center">
                   <VStack align="start" gap={1}>
-                    <Heading size="md" color="#444">
+                    <Heading size="md" color="gray.700">
                       {soc.link ? (
                         <Link href={soc.link} target="_blank" rel="noopener noreferrer" color="teal.500">
                           {soc.name} <ExternalLink size={12} style={{display: "inline", verticalAlign: "middle"}} />
@@ -131,7 +123,9 @@ export default function VendorDetails({ data }) {
 
                 {soc.boards.length > 0 && (
                   <SimpleGrid columns={[1, 2, 3]} gap={4}>
-                    {soc.boards.map((board, boardIndex) => (
+                    {soc.boards.map((board, boardIndex) => {
+                      const imageCount = board.images.filter(img => img.link).length;
+                      return (
                       <Box
                         key={boardIndex}
                         asChild
@@ -190,7 +184,7 @@ export default function VendorDetails({ data }) {
                               </HStack>
 
                               <Text fontSize="xs" color="gray.600">
-                                {board.images.filter(img => img.link).length} image{board.images.filter(img => img.link).length !== 1 ? 's' : ''}
+                                {imageCount} image{imageCount !== 1 ? 's' : ''}
                               </Text>
 
                               <Badge
@@ -205,7 +199,8 @@ export default function VendorDetails({ data }) {
                           </HStack>
                         </RouterLink>
                       </Box>
-                    ))}
+                      );
+                    })}
                   </SimpleGrid>
                 )}
 

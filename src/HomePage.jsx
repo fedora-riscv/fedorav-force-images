@@ -37,7 +37,7 @@ export default function HomePage({ data }) {
   return (
     <VStack gap={8} align="stretch" p={6}>
       <Box textAlign="center">
-        <Heading size="xl" color="#444" mb={4}>
+        <Heading size="xl" color="gray.700" mb={4}>
           Welcome to Fedora-V Force Images
         </Heading>
         <Text fontSize="lg" color="gray.600" maxW="600px" mx="auto">
@@ -66,12 +66,12 @@ export default function HomePage({ data }) {
       </SimpleGrid>
 
       <Box>
-        <Heading size="md" color="#444" mb={4}>
+        <Heading size="md" color="gray.700" mb={4}>
           Quick Start
         </Heading>
         <SimpleGrid columns={[1, 2]} gap={4}>
           <Box p={6} border="1px solid" borderColor="gray.200" borderRadius="md">
-            <Heading size="sm" color="#444" mb={2}>
+            <Heading size="sm" color="gray.700" mb={2}>
               Browse Boards
             </Heading>
             <Text fontSize="sm" color="gray.600" mb={4}>
@@ -82,7 +82,7 @@ export default function HomePage({ data }) {
             </Text>
           </Box>
           <Box p={6} border="1px solid" borderColor="gray.200" borderRadius="md">
-            <Heading size="sm" color="#444" mb={2}>
+            <Heading size="sm" color="gray.700" mb={2}>
               Download Images
             </Heading>
             <Text fontSize="sm" color="gray.600" mb={4}>
@@ -103,7 +103,7 @@ export default function HomePage({ data }) {
       </Box>
 
       <Box>
-        <Heading size="md" color="#444" mb={4}>
+        <Heading size="md" color="gray.700" mb={4}>
           Chip Vendors
         </Heading>
         <SimpleGrid columns={[1, 2, 3]} gap={4}>
@@ -121,7 +121,7 @@ export default function HomePage({ data }) {
             >
               <RouterLink to={`/vendor/${encodeURIComponent(category.name)}`}>
                 <Flex justify="space-between" align="center" mb={2}>
-                  <Heading size="sm" color="#444">
+                  <Heading size="sm" color="gray.700">
                     {category.name}
                   </Heading>
                   <Badge colorPalette="gray" variant="outline">

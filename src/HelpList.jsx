@@ -7,10 +7,10 @@ const HelpList = () => {
   return (
     <Box p={4} bg="white" boxShadow="md" borderRadius="md" mr={[0, 0, 6]} mb={6}>
       <Flex align="center" mb={2}>
-        <Box asChild color="#444" mr={2}>
+        <Box asChild color="gray.700" mr={2}>
           <CircleHelp size={16} />
         </Box>
-        <Heading size="sm" color="#444">Help</Heading>
+        <Heading size="sm" color="gray.700">Help</Heading>
       </Flex>
       <Link asChild color="gray.500" fontSize="md" _hover={{ textDecoration: "underline" }}>
         <RouterLink to="/how-to-burn-images-to-sd-cards">

@@ -48,7 +48,7 @@ export default function RecentUpdates({ data }) {
       p={6}
       mb={6}
     >
-      <Heading size="md" mb={4} color="#444">
+      <Heading size="md" mb={4} color="gray.700">
         Recently Updated Images
       </Heading>
       <SimpleGrid columns={[1, 2, 3]} gap={4}>
@@ -101,7 +101,7 @@ export default function RecentUpdates({ data }) {
                   </VStack>
                 </HStack>
                 <VStack align="end" gap={1}>
-                  <Text fontSize="xs" fontWeight="medium" color="#444">
+                  <Text fontSize="xs" fontWeight="medium" color="gray.700">
                     {new Date(image.latest_updated).toLocaleDateString()}
                   </Text>
                   {image.release && (
