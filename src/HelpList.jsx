@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Heading, Button, Flex } from '@chakra-ui/react';
+import { Box, Heading, Link, Flex } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 import { CircleHelp } from 'lucide-react';
 
@@ -12,11 +12,11 @@ const HelpList = () => {
         </Box>
         <Heading size="sm" color="#444">Help</Heading>
       </Flex>
-      <Button asChild variant="plain" size="sm" color="teal.500">
+      <Link asChild color="gray.500" fontSize="md" _hover={{ textDecoration: "underline" }}>
         <RouterLink to="/how-to-burn-images-to-sd-cards">
           How to burn images to SD cards
         </RouterLink>
-      </Button>
+      </Link>
     </Box>
   );
 };

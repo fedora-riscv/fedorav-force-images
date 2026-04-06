@@ -2,7 +2,6 @@ import React, { useState, useMemo } from "react";
 import {
   Box,
   Heading,
-  Button,
   Link,
   Badge,
   Input,
@@ -109,7 +108,7 @@ export default function BoardList({ data }) {
                 {category.soc.map((subCategory, subIndex) => (
                   <AccordionRoot collapsible key={subIndex}>
                     <AccordionItem value={subCategory.name}>
-                      <AccordionItemTrigger onClick={() => handleVendorClick(category.name)} cursor="pointer">
+                      <AccordionItemTrigger pl={4} onClick={() => handleVendorClick(category.name)} cursor="pointer" _hover={{ bg: "gray.100" }} borderRadius="md">
                         <Box flex="1" textAlign="left" color="#444">
                           {subCategory.name}
                           {searchTerm.trim() && (
@@ -120,22 +119,23 @@ export default function BoardList({ data }) {
                         </Box>
                         <AccordionItemIndicator />
                       </AccordionItemTrigger>
-                      <AccordionItemContent pb={4}>
-                        <List.Root gap={2} listStyle="none">
+                      <AccordionItemContent pb={2} pl={6}>
+                        <List.Root gap={1} listStyle="none">
                           {subCategory.boards.map((product, productIndex) => (
                             <List.Item key={productIndex}>
-                              <Button
+                              <Link
                                 asChild
-                                variant="plain"
-                                size="sm"
-                                color="teal.500"
+                                color="gray.500"
+                                fontWeight="semibold"
+                                fontSize="md"
+                                _hover={{ textDecoration: "underline" }}
                               >
                                 <RouterLink to={`/${product.name}`}>
                                   {product.name}
                                 </RouterLink>
-                              </Button>
+                              </Link>
                               {product["new_product"] && (
-                                <Badge colorPalette="blue" variant="solid" style={{marginLeft: 5}}>
+                                <Badge colorPalette="blue" variant="solid" ml={1}>
                                   New
                                 </Badge>
                               )}

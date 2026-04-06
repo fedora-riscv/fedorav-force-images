@@ -1,8 +1,66 @@
-import { createSystem, defaultConfig, defineConfig } from "@chakra-ui/react";
+import { createSystem, defaultConfig, defineConfig, defineRecipe } from "@chakra-ui/react";
+
+// Heading recipe matching Chakra UI v2 size mapping
+const headingRecipe = defineRecipe({
+  className: "chakra-heading",
+  base: {
+    fontFamily: "heading",
+    fontWeight: "bold",
+  },
+  variants: {
+    size: {
+      "4xl": { fontSize: "7xl", lineHeight: 1 },
+      "3xl": { fontSize: "6xl", lineHeight: 1 },
+      "2xl": { fontSize: "5xl", lineHeight: 1.2 },
+      xl: { fontSize: "4xl", lineHeight: 1.2 },
+      lg: { fontSize: "3xl", lineHeight: 1.33 },
+      md: { fontSize: "xl", lineHeight: 1.2 },
+      sm: { fontSize: "md", lineHeight: 1.2 },
+      xs: { fontSize: "sm", lineHeight: 1.2 },
+    },
+  },
+  defaultVariants: {
+    size: "xl",
+  },
+});
+
+// Badge recipe matching Chakra UI v2 defaults
+const badgeRecipe = defineRecipe({
+  className: "chakra-badge",
+  base: {
+    textTransform: "uppercase",
+    fontWeight: "bold",
+    fontSize: "xs",
+    borderRadius: "sm",
+    px: "1",
+  },
+  variants: {
+    variant: {
+      solid: {},
+      subtle: {},
+      outline: {
+        borderWidth: "1px",
+      },
+    },
+    size: {
+      sm: { fontSize: "xs", px: "1" },
+      md: { fontSize: "xs", px: "2" },
+      lg: { fontSize: "sm", px: "2" },
+    },
+  },
+  defaultVariants: {
+    variant: "subtle",
+    size: "sm",
+  },
+});
 
 // Custom system matching Chakra UI v2 default theme tokens
 const config = defineConfig({
   theme: {
+    recipes: {
+      heading: headingRecipe,
+      badge: badgeRecipe,
+    },
     tokens: {
       fonts: {
         body: { value: '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"' },
