@@ -60,6 +60,7 @@ export const imageMap = {
   "A210": "/images/zhihe-a210.webp",
   "Muse Pico": "/images/musepico.png",
   "CoM260": "/images/com260.png",
+  "FRDM i.MX 8M Plus": "/images/frdm-imx8mplus.webp",
 };
 
 export const mdMap = {
