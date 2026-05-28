@@ -63,7 +63,8 @@ export const imageMap = {
   "Radxa Dragon Q6A": "/images/radxa-dragon-q6a.webp",
   "A210": "/images/zhihe-a210.webp",
   "Muse Pico": "/images/musepico.png",
-  "CoM260": "/images/com260.png",
+  "CoM260 Kit": "/images/CoM260-Kit.webp",
+  "Pico-ITX": "/images/Pico-ITX.webp",
   "FRDM i.MX 8M Plus": "/images/frdm-imx8mplus.webp",
 };
 
