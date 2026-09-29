@@ -1,171 +1,145 @@
-import React, { useState, useEffect, createContext } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
-  ChakraProvider,
-  Box,
-  Flex,
-  Heading,
-  Text,
-  Spinner,
-  VStack,
-  Button,
-  Group,
-} from "@chakra-ui/react";
-import { BrowserRouter as Router, Routes, Route, Link as RouterLink } from "react-router-dom";
+  createBrowserRouter,
+  Link,
+  NavLink,
+  Outlet,
+  RouterProvider,
+  ScrollRestoration,
+} from "react-router-dom";
 import { getApiUrl, getPlatformFromDomain, isDomainSpecific } from "./config";
-import { system } from "./theme";
-import BoardList from "./BoardList";
+import { ARCH_NAME } from "./utils";
+import HomePage from "./HomePage";
 import ProductDetails from "./ProductDetails";
 import HowToBurnImagesToSDCards from "./HowToBurnImagesToSDCards";
-import HelpList from "./HelpList";
-import RecentUpdates from "./RecentUpdates";
-import HomePage from "./HomePage";
-import VendorDetails from "./VendorDetails";
 
-export const PlatformContext = createContext({
-  platform: 'riscv',
-  setPlatform: () => {},
-  isSpecificDomain: true,
-});
-
-function App() {
-  const [data, setData] = useState(null);
-  const [platform, setPlatform] = useState(getPlatformFromDomain());
+function Layout() {
+  const [platform] = useState(getPlatformFromDomain());
   const [isSpecificDomain] = useState(isDomainSpecific());
-  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [attempt, setAttempt] = useState(0);
 
-  const handlePlatformChange = (newPlatform) => {
-    if (newPlatform === platform) return;
+  useEffect(() => {
+    let cancelled = false;
+    setError(null);
+    fetch(getApiUrl(platform))
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
+      })
+      .then((json) => !cancelled && setData(json))
+      .catch((err) => {
+        console.error("Error fetching data:", err);
+        if (!cancelled) setError(err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [platform, attempt]);
 
-    if (!isSpecificDomain) {
-      localStorage.setItem('platform', newPlatform);
-    }
+  useEffect(() => {
+    document.title = `Fedora-V Force Images for ${ARCH_NAME[platform]}`;
+  }, [platform]);
 
+  // Each platform has its own domain; elsewhere (local dev, previews) the choice is remembered locally.
+  const changePlatform = (next) => {
+    if (next === platform) return;
     if (isSpecificDomain) {
-      const newHostname = newPlatform === 'arm'
-        ? 'images.arm.fedoravforce.org'
-        : 'images.fedoravforce.org';
-      window.location.href = `${window.location.protocol}//${newHostname}/`;
+      const host = next === "arm" ? "images.arm.fedoravforce.org" : "images.fedoravforce.org";
+      window.location.href = `${window.location.protocol}//${host}/`;
     } else {
-      window.location.href = '/';
+      try {
+        localStorage.setItem("platform", next);
+      } catch {
+        // storage blocked: the switch still works for this visit
+      }
+      window.location.href = "/";
     }
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    fetch(getApiUrl(platform))
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        setIsLoading(false);
-      });
-  }, [platform]);
-
-  useEffect(() => {
-    document.title = `Fedora-V Force Images For ${platform === 'arm' ? 'ARM' : 'RISC-V'}`;
-  }, [platform]);
-
-  if (isLoading || !data) {
-    return (
-      <ChakraProvider value={system}>
-        <Flex justifyContent="center" alignItems="center" height="100vh">
-          <VStack gap={3}>
-            <Spinner borderWidth="3px" width="50px" height="50px" />
-            <Text color="gray.600" fontSize="sm">
-              Loading {platform === 'arm' ? 'ARM' : 'RISC-V'} boards...
-            </Text>
-          </VStack>
-        </Flex>
-      </ChakraProvider>
-    );
-  }
+  const retry = useCallback(() => setAttempt((n) => n + 1), []);
 
   return (
-    <ChakraProvider value={system}>
-      <PlatformContext.Provider value={{ platform, setPlatform: handlePlatformChange, isSpecificDomain }}>
-        <Router>
-          <Box p={6} bg="#f4f4f4" minHeight="100vh">
-            <Flex
-              asChild
-              bg="white"
-              boxShadow="sm"
-              p={4}
-              mb={6}
-              justifyContent="center"
-              alignItems="center"
-              borderRadius="md"
-              cursor="pointer"
-              _hover={{ boxShadow: "md", transform: "translateY(-1px)" }}
-              transition="all 0.2s"
-            >
-              <RouterLink to="/">
-                <img src="/images/fvf-logo.webp" alt="Fedora-V Force Logo" width="5%" />
-                <Heading mx={4} size="lg" color="gray.700">
-                  Fedora-V Force Images For {platform === 'arm' ? 'ARM' : 'RISC-V'}
-                </Heading>
-                <img src="/images/fedora-remix.webp" alt="Fedora Remix" width="5%" />
-              </RouterLink>
-            </Flex>
+    <>
+      <header className="top">
+        <div className="wrap">
+          <Link className="brand" to="/" viewTransition aria-label="Fedora-V Force Images home">
+            <img src="/images/fvf-torch.png" alt="" />
+            <b>Fedora-V Force</b>
+            <span>IMAGES</span>
+          </Link>
+          <nav className="links" aria-label="Main">
+            <NavLink to="/" end viewTransition>Boards</NavLink>
+            <NavLink to="/how-to-burn-images-to-sd-cards" viewTransition>Install guide</NavLink>
+            <a href="https://fedoravforce.org">fedoravforce.org ↗</a>
+            <a href="https://github.com/fedora-riscv">GitHub ↗</a>
+          </nav>
+          <div className="arch" role="group" aria-label="Architecture">
+            {["riscv", "arm"].map((p) => (
+              <button key={p} type="button" aria-pressed={platform === p} onClick={() => changePlatform(p)}>
+                {ARCH_NAME[p]}
+              </button>
+            ))}
+          </div>
+        </div>
+      </header>
 
-            <RecentUpdates data={data} />
-            <Flex direction={["column", "column", "row"]}>
-              <Box>
-                <HelpList />
-                <BoardList data={data} />
-              </Box>
-              <Box flex="1" p={6} bg="white" boxShadow="md" borderRadius="md">
-                <Routes>
-                  <Route path="/" element={
-                    <HomePage data={data} />
-                  } />
-                  <Route path="/how-to-burn-images-to-sd-cards" element={
-                    <Flex align="center" justify="center" direction="column" p={6}>
-                        <HowToBurnImagesToSDCards />
-                    </Flex>
-                  } />
-                  <Route path="/vendor/:vendorName" element={
-                    <VendorDetails data={data} />
-                  } />
-                  <Route path="/:productName" element={
-                    <ProductDetails data={data} />
-                  } />
-                </Routes>
-              </Box>
-            </Flex>
-            <Box textAlign="center" mt={6}>
-              <Text fontSize="sm" color="gray.500" mb={3}>
-                Last Updated: {new Date(data.latest_updated * 1000).toLocaleString()}
-              </Text>
+      <main>
+        {data ? (
+          <Outlet context={{ data, platform }} />
+        ) : error ? (
+          <div className="wrap" style={{ paddingBlock: 96 }}>
+            <div className="empty">
+              <b>Board list did not load</b>
+              The image server did not answer ({error.message}). Check your connection and try again.
+              <br />
+              <button className="btn btn-line btn-sm" type="button" onClick={retry} style={{ marginTop: 14 }}>
+                Try again
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="loading" role="status">
+            <i />
+            Loading {ARCH_NAME[platform]} boards
+          </div>
+        )}
+      </main>
 
-              <Box display="inline-block" bg="white" p={2} borderRadius="lg" boxShadow="md">
-                <Group attached>
-                  {['riscv', 'arm'].map(p => (
-                    <Button
-                      key={p}
-                      onClick={() => handlePlatformChange(p)}
-                      fontWeight="bold"
-                      px={8}
-                      bg={platform === p ? 'blue.500' : 'gray.100'}
-                      color={platform === p ? 'white' : 'gray.600'}
-                      _hover={{ bg: platform === p ? 'blue.600' : 'gray.200' }}
-                      borderRadius="md"
-                      transition="all 0.2s"
-                      ml={p === 'arm' ? 2 : 0}
-                    >
-                      {p === 'riscv' ? 'RISC-V' : 'ARM'}
-                    </Button>
-                  ))}
-                </Group>
-              </Box>
-            </Box>
-          </Box>
-        </Router>
-      </PlatformContext.Provider>
-    </ChakraProvider>
+      <footer>
+        <div className="wrap">
+          <span>
+            {data
+              ? `Last updated ${new Date(data.latest_updated * 1000).toLocaleString()} · ${ARCH_NAME[platform]}`
+              : ARCH_NAME[platform]}
+          </span>
+          <nav>
+            <a href="https://fedoravforce.org">Fedora-V Force</a>
+            <a href="https://blog.fedoravforce.com">Blog</a>
+            <a href="https://openkoji.iscas.ac.cn/">openkoji</a>
+            <a href="https://github.com/fedora-riscv/fedorav-force-images">Source</a>
+          </nav>
+        </div>
+      </footer>
+      <ScrollRestoration />
+    </>
   );
 }
 
-export default App;
+const router = createBrowserRouter([
+  {
+    element: <Layout />,
+    children: [
+      { path: "/", element: <HomePage /> },
+      { path: "/how-to-burn-images-to-sd-cards", element: <HowToBurnImagesToSDCards /> },
+      { path: "/vendor/:vendorName", element: <HomePage /> },
+      { path: "/vendor/:vendorName/:socSlug", element: <HomePage /> },
+      { path: "/:productName", element: <ProductDetails /> },
+    ],
+  },
+]);
+
+export default function App() {
+  return <RouterProvider router={router} />;
+}
