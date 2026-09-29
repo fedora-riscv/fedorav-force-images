@@ -72,7 +72,7 @@ function Layout() {
           <nav className="links" aria-label="Main">
             <NavLink to="/" end viewTransition>Boards</NavLink>
             <NavLink to="/how-to-burn-images-to-sd-cards" viewTransition>Install guide</NavLink>
-            <a href="https://fedoravforce.org">fedoravforce.org ↗</a>
+            <a href="https://www.fedoravforce.org">fedoravforce.org ↗</a>
             <a href="https://github.com/fedora-riscv">GitHub ↗</a>
           </nav>
           <div className="arch" role="group" aria-label="Architecture">
@@ -115,7 +115,7 @@ function Layout() {
               : ARCH_NAME[platform]}
           </span>
           <nav>
-            <a href="https://fedoravforce.org">Fedora-V Force</a>
+            <a href="https://www.fedoravforce.org">Fedora-V Force</a>
             <a href="https://blog.fedoravforce.com">Blog</a>
             <a href="https://openkoji.iscas.ac.cn/">openkoji</a>
             <a href="https://github.com/fedora-riscv/fedorav-force-images">Source</a>
