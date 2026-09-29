@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { Link, useOutletContext, useParams } from "react-router-dom";
 import { getBoardPhoto } from "./config";
 import { BoardCard, ChipArt, Icon, transitionMemory } from "./components";
@@ -37,8 +38,12 @@ export default function HomePage() {
 
   const vendors = data.result;
   const all = useMemo(() => flattenBoards(data), [data]);
-  const vendor = vendorName ? vendors.find((v) => v.name === vendorName) ?? null : null;
-  const soc = vendor && socSlug ? vendor.soc.find((s) => slugify(s.name) === socSlug) ?? null : null;
+  // Vendor names in links are matched case-insensitively, as on the old vendor pages.
+  const vendor = vendorName
+    ? vendors.find((v) => v.name.toLowerCase() === vendorName.toLowerCase()) ?? null
+    : null;
+  const soc = vendor && socSlug ? (vendor.soc ?? []).find((s) => slugify(s.name) === socSlug) ?? null : null;
+  const socMissing = Boolean(vendor && socSlug && !soc);
 
   useEffect(() => {
     filterMemory.query = query;
@@ -168,7 +173,7 @@ export default function HomePage() {
                         <span className="t">
                           <b>{x.board.name}</b>
                           <small>
-                            {image.name.replace(/^Fedora /, "")} · {formatDate(image.latest_updated).slice(5)}
+                            {String(image.name ?? "").replace(/^Fedora /, "")} · {formatDate(image.latest_updated).slice(5)}
                             {x.board.new_product && (
                               <>
                                 {" · "}
@@ -195,10 +200,10 @@ export default function HomePage() {
               <li key={v.name}>
                 <Link to={vendorPath(v.name)} aria-current={vendor === v && !soc ? "true" : undefined}>
                   {v.name}
-                  <small>{v.soc.reduce((a, s) => a + s.boards.length, 0)}</small>
+                  <small>{(v.soc ?? []).reduce((a, s) => a + (s.boards ?? []).length, 0)}</small>
                 </Link>
                 <div className="socs">
-                  {v.soc.map((s) => (
+                  {(v.soc ?? []).map((s) => (
                     <Link key={s.name} to={socPath(v.name, s.name)} aria-current={soc === s ? "true" : undefined}>
                       {s.name}
                     </Link>
@@ -216,9 +221,9 @@ export default function HomePage() {
 
         <div ref={catalogRef} className="catalog" style={{ scrollMarginTop: 88 }}>
           <div className="vchips" role="group" aria-label="Chip vendor">
-            <Link className="chip" to="/" aria-pressed={!vendor}>All</Link>
+            <Link className="chip" to="/" aria-current={!vendor ? "page" : undefined}>All</Link>
             {vendors.map((v) => (
-              <Link key={v.name} className="chip" to={vendorPath(v.name)} aria-pressed={vendor === v}>
+              <Link key={v.name} className="chip" to={vendorPath(v.name)} aria-current={vendor === v ? "page" : undefined}>
                 {v.name}
               </Link>
             ))}
@@ -252,15 +257,27 @@ export default function HomePage() {
             </div>
           </div>
 
+          {socMissing && (
+            <div className="empty" style={{ marginBottom: 28 }}>
+              <b>No SoC “{socSlug}” under {vendor.name}</b>
+              Showing all {vendor.name} boards instead.
+            </div>
+          )}
           {vendorName && !vendor ? (
             <div className="empty">
               <b>No vendor called “{vendorName}”</b>
-              It may be listed under another architecture.
+              It may be listed under the other architecture.
               <br />
               <Link className="btn btn-line btn-sm" to="/" style={{ marginTop: 14 }}>Show all boards</Link>
             </div>
           ) : groups.length ? (
-            <div key={`${vendorName}|${socSlug}|${status}`} className={`stagger${q ? " quick" : ""}`}>
+            <div
+              key={`${vendorName}|${socSlug}|${status}`}
+              className={`stagger${q ? " quick" : ""}`}
+              // A card still named for the return morph must drop the name before another card
+              // claims it, or the browser aborts the transition on the duplicate name.
+              onClickCapture={() => returning && flushSync(() => setReturning(null))}
+            >
               {groups.map(({ v, items }) => (
                 <section className="vendor" key={v.name}>
                   <div className="vhead">
@@ -272,7 +289,7 @@ export default function HomePage() {
                       )}
                     </h3>
                     <span className="soc">
-                      {v.soc.map((s, k) => (
+                      {(v.soc ?? []).map((s, k) => (
                         <span key={s.name}>
                           {k > 0 && " · "}
                           <Link to={socPath(v.name, s.name)}>{s.name}</Link>
