@@ -1,0 +1,162 @@
+{
+  "BeagleV Ahead": {
+    "src": "/boards/beaglev-ahead.webp",
+    "kind": "alpha"
+  },
+  "Duo 256M": {
+    "src": "/boards/duo-256m.webp",
+    "kind": "cut"
+  },
+  "Duo-S": {
+    "src": "/boards/duo-s.webp",
+    "kind": "photo"
+  },
+  "Duo": {
+    "src": "/boards/duo.webp",
+    "kind": "cut"
+  },
+  "Jupiter": {
+    "src": "/boards/jupiter.webp",
+    "kind": "cut"
+  },
+  "LicheePi 3A": {
+    "src": "/boards/licheepi-3a.webp",
+    "kind": "alpha"
+  },
+  "LicheePi 4A": {
+    "src": "/boards/licheepi-4a.webp",
+    "kind": "alpha"
+  },
+  "LicheePi 5A": {
+    "src": "/boards/licheepi-5a.webp",
+    "kind": "alpha"
+  },
+  "LicheeRV Nano": {
+    "src": "/boards/licheerv-nano.webp",
+    "kind": "alpha"
+  },
+  "Mars": {
+    "src": "/boards/mars.webp",
+    "kind": "cut"
+  },
+  "Meles": {
+    "src": "/boards/meles.webp",
+    "kind": "cut"
+  },
+  "Muse book": {
+    "src": "/boards/muse-book.webp",
+    "kind": "cut"
+  },
+  "Pioneer": {
+    "src": "/boards/pioneer.webp",
+    "kind": "cut"
+  },
+  "DC-ROMA II": {
+    "src": "/boards/dc-roma-ii.webp",
+    "kind": "alpha"
+  },
+  "VisionFive V2": {
+    "src": "/boards/visionfive-v2.webp",
+    "kind": "cut"
+  },
+  "EIC7700-EVB": {
+    "src": "/boards/eic7700-evb.webp",
+    "kind": "photo"
+  },
+  "RuyiBook": {
+    "src": "/boards/ruyibook.webp",
+    "kind": "photo"
+  },
+  "NANHU_V2_DEV_BOARD V01": {
+    "src": "/boards/nanhu-v2-dev-board-v01.webp",
+    "kind": "photo"
+  },
+  "DC-ROMA I": {
+    "src": "/boards/dc-roma-i.webp",
+    "kind": "alpha"
+  },
+  "Oasis": {
+    "src": "/boards/oasis.webp",
+    "kind": "photo"
+  },
+  "Megrez": {
+    "src": "/boards/megrez.webp",
+    "kind": "alpha"
+  },
+  "MUSE N1": {
+    "src": "/boards/muse-n1.webp",
+    "kind": "cut"
+  },
+  "Banana Pi BPI-F3": {
+    "src": "/boards/banana-pi-bpi-f3.webp",
+    "kind": "cut"
+  },
+  "QEMU": {
+    "src": "/boards/qemu.webp",
+    "kind": "alpha"
+  },
+  "HiFive Premier P550": {
+    "src": "/boards/hifive-premier-p550.webp",
+    "kind": "alpha"
+  },
+  "Unmatched": {
+    "src": "/boards/unmatched.webp",
+    "kind": "alpha"
+  },
+  "Framework": {
+    "src": "/boards/framework.webp",
+    "kind": "alpha"
+  },
+  "Titan": {
+    "src": "/boards/titan.webp",
+    "kind": "alpha"
+  },
+  "Taurus": {
+    "src": "/boards/taurus.webp",
+    "kind": "alpha"
+  },
+  "UR-DP1000-EVB": {
+    "src": "/boards/ur-dp1000-evb.webp",
+    "kind": "alpha"
+  },
+  "Orion O6": {
+    "src": "/boards/orion-o6.webp",
+    "kind": "alpha"
+  },
+  "ROCK 5 ITX": {
+    "src": "/boards/rock-5-itx.webp",
+    "kind": "alpha"
+  },
+  "HD-RK3576-PI": {
+    "src": "/boards/hd-rk3576-pi.webp",
+    "kind": "cut"
+  },
+  "Fogwise AIRbox Q900": {
+    "src": "/boards/fogwise-airbox-q900.webp",
+    "kind": "alpha"
+  },
+  "Radxa Dragon Q6A": {
+    "src": "/boards/radxa-dragon-q6a.webp",
+    "kind": "alpha"
+  },
+  "A210": {
+    "src": "/boards/a210.webp",
+    "kind": "photo"
+  },
+  "Muse Pico": {
+    "src": "/boards/muse-pico.webp",
+    "kind": "cut"
+  },
+  "CoM260 Kit": {
+    "src": "/boards/com260-kit.webp",
+    "kind": "cut"
+  },
+  "Pico-ITX": {
+    "src": "/boards/pico-itx.webp",
+    "kind": "cut"
+  },
+  "FRDM i.MX 8M Plus": {
+    "src": "/boards/frdm-i-mx-8m-plus.webp",
+    "kind": "cut"
+  }
+}

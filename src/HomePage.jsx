@@ -1,158 +1,308 @@
-import React, { useContext } from "react";
-import { Box, Heading, Text, VStack, Button, SimpleGrid, Badge, Flex, StatRoot, StatLabel, StatValueText } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
-import { PlatformContext } from "./App";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Link, useOutletContext, useParams } from "react-router-dom";
+import { getBoardPhoto } from "./config";
+import { BoardCard, ChipArt, Icon, transitionMemory } from "./components";
+import {
+  ARCH_UNAME,
+  boardPath,
+  flattenBoards,
+  formatDate,
+  parseDate,
+  slugify,
+  socPath,
+  statusKey,
+  vendorPath,
+} from "./utils";
 
-export default function HomePage({ data }) {
-  const { platform } = useContext(PlatformContext);
+const STATUS_FILTERS = [
+  ["all", "All"],
+  ["GA", "GA"],
+  ["DEV", "DEV"],
+  ["EOL", "EOL"],
+  ["UNK", "Unknown"],
+];
 
-  if (!data || !data.result) {
-    return null;
-  }
+// Search text and status filter survive a round trip to a board page.
+const filterMemory = { query: "", status: "all" };
 
-  const totalBoards = data.result.reduce((total, category) => {
-    return total + category.soc.reduce((socTotal, soc) => {
-      return socTotal + soc.boards.length;
-    }, 0);
-  }, 0);
+export default function HomePage() {
+  const { data, platform } = useOutletContext();
+  const { vendorName, socSlug } = useParams();
+  const [query, setQuery] = useState(filterMemory.query);
+  const [status, setStatus] = useState(filterMemory.status);
+  const [returning, setReturning] = useState(transitionMemory.lastBoard);
+  const searchRef = useRef(null);
+  const catalogRef = useRef(null);
+  const firstRender = useRef(true);
 
-  const totalImages = data.result.reduce((total, category) => {
-    return total + category.soc.reduce((socTotal, soc) => {
-      return socTotal + soc.boards.reduce((boardTotal, board) => {
-        return boardTotal + board.images.length;
-      }, 0);
-    }, 0);
-  }, 0);
+  const vendors = data.result;
+  const all = useMemo(() => flattenBoards(data), [data]);
+  const vendor = vendorName ? vendors.find((v) => v.name === vendorName) ?? null : null;
+  const soc = vendor && socSlug ? vendor.soc.find((s) => slugify(s.name) === socSlug) ?? null : null;
 
-  const newBoards = data.result.reduce((total, category) => {
-    return total + category.soc.reduce((socTotal, soc) => {
-      return socTotal + soc.boards.filter(board => board.new_product).length;
-    }, 0);
-  }, 0);
+  useEffect(() => {
+    filterMemory.query = query;
+    filterMemory.status = status;
+  }, [query, status]);
 
-  const categories = data.result.length;
+  // Coming back from a board page: bring its card into view so the photo can morph back into it.
+  useLayoutEffect(() => {
+    if (!returning) return;
+    document.querySelector(`[data-board="${CSS.escape(returning)}"]`)?.scrollIntoView({ block: "center" });
+    transitionMemory.lastBoard = null;
+    const t = setTimeout(() => setReturning(null), 700);
+    return () => clearTimeout(t);
+  }, [returning]);
 
-  const platformName = platform === 'arm' ? 'ARM' : 'RISC-V';
+  // Picking a vendor or SoC scrolls the catalog to the top of the screen.
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      if (!vendorName || returning) return;
+    }
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    requestAnimationFrame(() =>
+      catalogRef.current?.scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" })
+    );
+  }, [vendorName, socSlug]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // "/" focuses the search box.
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "/" && !/input|textarea|select/i.test(document.activeElement?.tagName ?? "")) {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
+
+  const counts = { all: all.length, GA: 0, DEV: 0, EOL: 0, UNK: 0 };
+  all.forEach((x) => counts[statusKey(x.board.board_status)]++);
+
+  const q = query.trim().toLowerCase();
+  const list = all.filter((x) => {
+    if (vendor && x.vendor !== vendor) return false;
+    if (soc && x.soc !== soc) return false;
+    if (status !== "all" && statusKey(x.board.board_status) !== status) return false;
+    if (!q) return true;
+    return [x.board.name, x.board.vendor, x.soc.name, x.vendor.name].some((s) =>
+      String(s ?? "").toLowerCase().includes(q)
+    );
+  });
+  const groups = vendors.map((v) => ({ v, items: list.filter((x) => x.vendor === v) })).filter((g) => g.items.length);
+
+  const imageCount = all.reduce((a, x) => a + x.available.length, 0);
+  const newCount = all.filter((x) => x.board.new_product).length;
+  const recent = all
+    .flatMap((x) => x.available.map((image) => ({ x, image, t: parseDate(image.latest_updated) })))
+    .sort((a, b) => b.t - a.t)
+    .slice(0, 5);
+
+  const resetFilters = () => {
+    setQuery("");
+    setStatus("all");
+  };
 
   return (
-    <VStack gap={8} align="stretch" p={6}>
-      <Box textAlign="center">
-        <Heading size="xl" color="gray.700" mb={4}>
-          Welcome to Fedora-V Force Images
-        </Heading>
-        <Text fontSize="lg" color="gray.600" maxW="600px" mx="auto">
-          Your gateway to {platformName} development board images. Browse, download, and deploy
-          Fedora Linux images optimized for various {platformName} hardware platforms.
-        </Text>
-      </Box>
+    <>
+      <section className="hero view">
+        <div className="wrap">
+          <div className="hrow">
+            <div>
+              <div className="kicker">
+                <span className="dot" />
+                <span>
+                  $ uname -m <b>{ARCH_UNAME[platform]}</b>
+                </span>
+                <span>多啦V盟</span>
+                <span>mirror.iscas.ac.cn</span>
+              </div>
+              <h1>
+                <span className="ln">
+                  <span>Pick a board.</span>
+                </span>{" "}
+                <span className="ln">
+                  <span>
+                    Flash <span className="v">Fedora.</span>
+                  </span>
+                </span>
+              </h1>
+            </div>
+            <div>
+              <label className="search" htmlFor="q">
+                {Icon.search}
+                <input
+                  id="q"
+                  ref={searchRef}
+                  type="search"
+                  autoComplete="off"
+                  placeholder={`Search ${all.length} boards, SoCs or vendors`}
+                  aria-label="Search boards"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+                <kbd>/</kbd>
+              </label>
+              <div className="stats">
+                <span><b>{all.length}</b>boards</span>
+                <span><b>{imageCount}</b>images</span>
+                <span><b>{vendors.length}</b>chip vendors</span>
+                <span className="hot"><b>{newCount}</b>new</span>
+              </div>
+            </div>
+          </div>
+          {recent.length > 0 && (
+            <div className="log" aria-label="Recently updated images">
+              <span>Recently updated</span>
+              <ol>
+                {recent.map(({ x, image }) => {
+                  const photo = getBoardPhoto(x.board.name);
+                  return (
+                    <li key={`${x.board.name}-${image.link}`}>
+                      <Link to={boardPath(x.board.name)} viewTransition>
+                        <span className="th">
+                          {photo ? <img src={photo.src} alt="" /> : <ChipArt soc={x.soc.name} />}
+                        </span>
+                        <span className="t">
+                          <b>{x.board.name}</b>
+                          <small>
+                            {image.name.replace(/^Fedora /, "")} · {formatDate(image.latest_updated).slice(5)}
+                            {x.board.new_product && (
+                              <>
+                                {" · "}
+                                <em>NEW</em>
+                              </>
+                            )}
+                          </small>
+                        </span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
+          )}
+        </div>
+      </section>
 
-      <SimpleGrid columns={[2, 2, 4]} gap={6}>
-        <StatRoot textAlign="center" p={4} bg="blue.50" borderRadius="md">
-          <StatValueText fontSize="3xl" color="blue.600">{totalBoards}</StatValueText>
-          <StatLabel color="blue.800">Development Boards</StatLabel>
-        </StatRoot>
-        <StatRoot textAlign="center" p={4} bg="green.50" borderRadius="md">
-          <StatValueText fontSize="3xl" color="green.600">{totalImages}</StatValueText>
-          <StatLabel color="green.800">Available Images</StatLabel>
-        </StatRoot>
-        <StatRoot textAlign="center" p={4} bg="purple.50" borderRadius="md">
-          <StatValueText fontSize="3xl" color="purple.600">{categories}</StatValueText>
-          <StatLabel color="purple.800">Vendors</StatLabel>
-        </StatRoot>
-        <StatRoot textAlign="center" p={4} bg="orange.50" borderRadius="md">
-          <StatValueText fontSize="3xl" color="orange.600">{newBoards}</StatValueText>
-          <StatLabel color="orange.800">New Boards</StatLabel>
-        </StatRoot>
-      </SimpleGrid>
+      <div className="wrap cat">
+        <aside className="index" aria-label="Chip vendors">
+          <h4>Chip vendors</h4>
+          <ul>
+            {vendors.map((v) => (
+              <li key={v.name}>
+                <Link to={vendorPath(v.name)} aria-current={vendor === v && !soc ? "true" : undefined}>
+                  {v.name}
+                  <small>{v.soc.reduce((a, s) => a + s.boards.length, 0)}</small>
+                </Link>
+                <div className="socs">
+                  {v.soc.map((s) => (
+                    <Link key={s.name} to={socPath(v.name, s.name)} aria-current={soc === s ? "true" : undefined}>
+                      {s.name}
+                    </Link>
+                  ))}
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="help">
+            <h4>Help</h4>
+            <Link to="/how-to-burn-images-to-sd-cards" viewTransition>How to flash an SD card →</Link>
+            <a href="https://blog.fedoravforce.com">Test reports on the blog ↗</a>
+          </div>
+        </aside>
 
-      <Box>
-        <Heading size="md" color="gray.700" mb={4}>
-          Quick Start
-        </Heading>
-        <SimpleGrid columns={[1, 2]} gap={4}>
-          <Box p={6} border="1px solid" borderColor="gray.200" borderRadius="md">
-            <Heading size="sm" color="gray.700" mb={2}>
-              Browse Boards
-            </Heading>
-            <Text fontSize="sm" color="gray.600" mb={4}>
-              Explore development boards by category and find the perfect match for your project.
-            </Text>
-            <Text fontSize="xs" color="gray.500">
-              Use the navigation panel on the left to browse by vendor and SoC type.
-            </Text>
-          </Box>
-          <Box p={6} border="1px solid" borderColor="gray.200" borderRadius="md">
-            <Heading size="sm" color="gray.700" mb={2}>
-              Download Images
-            </Heading>
-            <Text fontSize="sm" color="gray.600" mb={4}>
-              Get ready-to-use Fedora Linux images with MD5 verification.
-            </Text>
-            <Button
-              asChild
-              size="sm"
-              colorPalette="blue"
-              variant="outline"
-            >
-              <RouterLink to="/how-to-burn-images-to-sd-cards">
-                Installation Guide
-              </RouterLink>
-            </Button>
-          </Box>
-        </SimpleGrid>
-      </Box>
+        <div ref={catalogRef} className="catalog" style={{ scrollMarginTop: 88 }}>
+          <div className="vchips" role="group" aria-label="Chip vendor">
+            <Link className="chip" to="/" aria-pressed={!vendor}>All</Link>
+            {vendors.map((v) => (
+              <Link key={v.name} className="chip" to={vendorPath(v.name)} aria-pressed={vendor === v}>
+                {v.name}
+              </Link>
+            ))}
+          </div>
+          <div className="toolbar">
+            <h2>
+              {soc ? (
+                <>
+                  {soc.name}
+                  <span className="of">{vendor.name}</span>
+                </>
+              ) : vendor ? (
+                vendor.name
+              ) : (
+                "All boards"
+              )}
+              <small>{list.length} shown</small>
+            </h2>
+            <div className="filters" role="group" aria-label="Board status">
+              <span className="lab">Status</span>
+              {STATUS_FILTERS.filter(([k]) => k === "all" || counts[k]).map(([k, label]) => (
+                <button key={k} className="chip" type="button" aria-pressed={status === k} onClick={() => setStatus(k)}>
+                  {label} {counts[k]}
+                </button>
+              ))}
+              {vendor && (
+                <Link className="chip" to="/">
+                  ✕ {soc ? soc.name : vendor.name}
+                </Link>
+              )}
+            </div>
+          </div>
 
-      <Box>
-        <Heading size="md" color="gray.700" mb={4}>
-          Chip Vendors
-        </Heading>
-        <SimpleGrid columns={[1, 2, 3]} gap={4}>
-          {data.result.map((category, index) => (
-            <Box
-              key={index}
-              asChild
-              p={4}
-              border="1px solid"
-              borderColor="gray.200"
-              borderRadius="md"
-              _hover={{ bg: "gray.50", textDecoration: "none", transform: "translateY(-2px)", boxShadow: "md" }}
-              transition="all 0.2s"
-              cursor="pointer"
-            >
-              <RouterLink to={`/vendor/${encodeURIComponent(category.name)}`}>
-                <Flex justify="space-between" align="center" mb={2}>
-                  <Heading size="sm" color="gray.700">
-                    {category.name}
-                  </Heading>
-                  <Badge colorPalette="gray" variant="outline">
-                    {category.soc.reduce((total, soc) => total + soc.boards.length, 0)} boards
-                  </Badge>
-                </Flex>
-                <Text fontSize="xs" color="gray.600">
-                  {category.soc.length} SoC {category.soc.length === 1 ? 'family' : 'families'}
-                </Text>
-              </RouterLink>
-            </Box>
-          ))}
-        </SimpleGrid>
-      </Box>
-
-      <Box textAlign="center" pt={4}>
-        <Text fontSize="sm" color="gray.500">
-          Need help? Check out our{" "}
-          <Button
-            asChild
-            variant="plain"
-            size="sm"
-            color="teal.500"
-          >
-            <RouterLink to="/how-to-burn-images-to-sd-cards">
-              installation guide
-            </RouterLink>
-          </Button>
-          {" "}or browse the board categories on the left.
-        </Text>
-      </Box>
-    </VStack>
+          {vendorName && !vendor ? (
+            <div className="empty">
+              <b>No vendor called “{vendorName}”</b>
+              It may be listed under another architecture.
+              <br />
+              <Link className="btn btn-line btn-sm" to="/" style={{ marginTop: 14 }}>Show all boards</Link>
+            </div>
+          ) : groups.length ? (
+            <div key={`${vendorName}|${socSlug}|${status}`} className={`stagger${q ? " quick" : ""}`}>
+              {groups.map(({ v, items }) => (
+                <section className="vendor" key={v.name}>
+                  <div className="vhead">
+                    <h3>
+                      {v.link ? (
+                        <a href={v.link} target="_blank" rel="noopener noreferrer">{v.name}</a>
+                      ) : (
+                        v.name
+                      )}
+                    </h3>
+                    <span className="soc">
+                      {v.soc.map((s, k) => (
+                        <span key={s.name}>
+                          {k > 0 && " · "}
+                          <Link to={socPath(v.name, s.name)}>{s.name}</Link>
+                        </span>
+                      ))}
+                    </span>
+                    <span className="cnt">
+                      {items.length} board{items.length > 1 ? "s" : ""}
+                    </span>
+                  </div>
+                  <div className="grid">
+                    {items.map((x, k) => (
+                      <BoardCard key={x.board.name} item={x} index={k} returning={returning === x.board.name} />
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          ) : (
+            <div className="empty">
+              <b>{q ? `No boards match “${query}”` : "No boards with this status"}</b>
+              Try a board, SoC or vendor name such as “K1”, “TH1520” or “Milk-V”.
+              <br />
+              <button className="btn btn-line btn-sm" type="button" onClick={resetFilters} style={{ marginTop: 14 }}>
+                Clear search and filters
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
   );
 }

@@ -1,512 +1,351 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
-import { getStatusBadgeColor } from "./utils";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { Link, useOutletContext, useParams } from "react-router-dom";
+import Giscus from "@giscus/react";
+import { getBoardPhoto, mdMap, testReportMap } from "./config";
+import { ChipArt, Icon, StatusPill, transitionMemory } from "./components";
 import {
-  Box,
-  VStack,
-  HStack,
-  Heading,
-  Text,
-  Link,
-  Badge,
-  Button,
-  Image,
-  SimpleGrid,
-  Flex,
-  Code,
-  StatRoot,
-  StatLabel,
-  StatValueText,
-  StatHelpText,
-  TabsRoot,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-  PopoverRoot,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverArrow,
-  PopoverCloseTrigger,
-  PopoverHeader,
-  PopoverBody,
-  PopoverPositioner,
-  List,
-} from "@chakra-ui/react";
-import {
-  ExternalLink,
-  Download as DownloadIcon,
-  Info,
-  Copy,
-  History,
-  Clock,
-} from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import rehypeRaw from 'rehype-raw';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { imageMap, mdMap, testReportMap } from "./config";
-import Giscus from '@giscus/react';
+  ARCH_NAME,
+  ARCH_UNAME,
+  STATUS_TEXT,
+  directoryUrl,
+  fileName,
+  findBoard,
+  formatDate,
+  parseChangelog,
+  socPath,
+  vendorPath,
+} from "./utils";
 
-export default function ProductDetails({ data }) {
+const FEATURE_CLASS = { ok: "ok", ng: "ng", warning: "warning" };
+
+const BoardDoc = lazy(() => import("./BoardDoc"));
+
+function ImageRow({ image }) {
+  const [open, setOpen] = useState(null);
+  const [copied, setCopied] = useState(false);
+  const codeRef = useRef(null);
+  const name = fileName(image.link);
+  const changelog = typeof image.changelog === "string" && image.changelog.trim() ? image.changelog : "";
+
+  const copy = () => {
+    const done = () => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    };
+    const selectInstead = () => {
+      const range = document.createRange();
+      range.selectNodeContents(codeRef.current);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    };
+    if (navigator.clipboard) navigator.clipboard.writeText(image.md5).then(done, selectInstead);
+    else selectInstead();
+  };
+  const toggle = (key) => setOpen((cur) => (cur === key ? null : key));
+
+  return (
+    <article className="img">
+      <div>
+        <h4>{image.name}</h4>
+        <div className="tg">
+          {image.release && <span className="rel">Fedora {image.release}</span>}
+          {image.live && <span className="live">Live</span>}
+          {image.latest_updated && <span>{formatDate(image.latest_updated)}</span>}
+        </div>
+        <div className="fn">{name}</div>
+      </div>
+      <div className="act">
+        <a className="btn btn-gold" href={image.link} target="_blank" rel="noopener noreferrer">
+          {Icon.download} Download
+        </a>
+        <a className="btn btn-line btn-sm" href={directoryUrl(image.link)} target="_blank" rel="noopener noreferrer">
+          {Icon.history} All versions
+        </a>
+      </div>
+      {(image.md5 || changelog) && (
+        <div className="sum">
+          {image.md5 && (
+            <div className="md5">
+              <span className="k">MD5</span>
+              <code ref={codeRef} tabIndex={0}>{image.md5}</code>
+              <button className="btn btn-line btn-sm" type="button" onClick={copy}>
+                {Icon.copy} {copied ? "Copied" : "Copy"}
+              </button>
+            </div>
+          )}
+          <div className="row2">
+            {image.md5 && (
+              <button className="tgl" type="button" aria-expanded={open === "verify"} onClick={() => toggle("verify")}>
+                How to verify
+              </button>
+            )}
+            {changelog && (
+              <button className="tgl" type="button" aria-expanded={open === "log"} onClick={() => toggle("log")}>
+                Changelog
+              </button>
+            )}
+          </div>
+          {image.md5 && (
+            <div className={`drawer${open === "verify" ? " open" : ""}`}>
+              <div>
+                <pre>
+                  <span className="c"># in the folder you downloaded to</span>
+                  {"\n"}
+                  <span className="p">$ </span>md5sum {name}
+                  {"\n"}
+                  {image.md5}  {name}
+                  {"\n"}
+                  <span className="c"># the hash must match the one above</span>
+                </pre>
+              </div>
+            </div>
+          )}
+          {changelog && (
+            <div className={`drawer${open === "log" ? " open" : ""}`}>
+              <div>
+                <ol className="clog">
+                  {parseChangelog(changelog).map((entry, k) => (
+                    <li key={k}>
+                      <time>{entry.date || "—"}</time>
+                      <div>
+                        {entry.lines.length
+                          ? entry.lines.map((l, i) => (
+                              <span key={i}>
+                                {i > 0 && <br />}
+                                {l}
+                              </span>
+                            ))
+                          : "update"}
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </article>
+  );
+}
+
+export default function ProductDetails() {
+  const { data, platform } = useOutletContext();
   const { productName } = useParams();
-  const [copiedMd5, setCopiedMd5] = useState(null);
+  const found = findBoard(data, productName);
+  const [tab, setTab] = useState("downloads");
+  const [animateTab, setAnimateTab] = useState(false);
 
-  let selectedProduct = null;
-  let selectedSoc = null;
-  let categoryInfo = null;
-
-  for (let category of data.result) {
-    for (let subCategory of category.soc) {
-      for (let board of subCategory.boards) {
-        if (board.name === productName) {
-          selectedProduct = board;
-          selectedSoc = subCategory;
-          categoryInfo = category;
-          break;
-        }
-      }
+  useEffect(() => {
+    setTab("downloads");
+    setAnimateTab(false);
+    if (found) {
+      transitionMemory.lastBoard = found.board.name;
+      document.title = `${found.board.name} · Fedora-V Force Images`;
     }
-  }
+    return () => {
+      document.title = `Fedora-V Force Images for ${ARCH_NAME[platform]}`;
+    };
+  }, [productName]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const getFeatureTagColor = (status) => {
-    switch (status.toLowerCase()) {
-      case 'ok': return "green";
-      case 'ng': return "red";
-      case 'warning': return "yellow";
-      default: return "gray";
-    }
-  };
-
-  const handleCopyMd5 = (md5) => {
-    navigator.clipboard.writeText(md5);
-    setCopiedMd5(md5);
-    setTimeout(() => setCopiedMd5(null), 2000);
-  };
-
-  if (!selectedProduct) {
+  if (!found) {
     return (
-      <Flex align="center" justify="center" direction="column" p={6}>
-        <Box color="gray.500" mb={4}>
-          <Info size={32} />
-        </Box>
-        <Text fontSize="lg" color="gray.500" textAlign="center">
-          Board not found.
-        </Text>
-      </Flex>
+      <div className="wrap" style={{ paddingBlock: 96 }}>
+        <div className="empty view">
+          <b>Board not found</b>
+          “{productName}” is not in the {ARCH_NAME[platform]} list. It may have been renamed, or it may be an{" "}
+          {platform === "arm" ? "RISC-V" : "ARM"} board.
+          <br />
+          <Link className="btn btn-line btn-sm" to="/" style={{ marginTop: 14 }}>
+            Back to all boards
+          </Link>
+        </div>
+      </div>
     );
   }
 
-  const availableImages = selectedProduct.images.filter(img => img.link);
-  const unavailableImages = selectedProduct.images.filter(img => !img.link);
+  const { board, soc, vendor, available } = found;
+  const upcoming = (board.images ?? []).filter((i) => !i.link);
+  const features =
+    board.features && !Array.isArray(board.features)
+      ? Object.entries(board.features).filter(([, s]) => s !== null)
+      : [];
+  const doc = mdMap[board.name];
+  const testReport = testReportMap[board.name];
+  const photo = getBoardPhoto(board.name);
 
-  const tabItems = [
-    { value: "overview", label: "Overview & Downloads" },
-    ...(mdMap[selectedProduct.name] ? [{ value: "docs", label: "Documentation" }] : []),
-    ...(testReportMap[selectedProduct.name] ? [{ value: "tests", label: "Test Reports" }] : []),
-    { value: "discussion", label: "Discussion" },
+  const tabs = [
+    ["downloads", "Downloads", available.length],
+    ...(features.length ? [["hardware", "Hardware", features.length]] : []),
+    ...(doc ? [["docs", "Documentation"]] : []),
+    ...(testReport ? [["tests", "Test report"]] : []),
+    ["discussion", "Discussion"],
   ];
+  const current = tabs.some(([k]) => k === tab) ? tab : "downloads";
+  const pick = (k) => {
+    setAnimateTab(true);
+    setTab(k);
+  };
 
   return (
-    <VStack gap={6} align="stretch">
-      <Box borderWidth="1px" borderRadius="md" p={5}>
-        <SimpleGrid columns={[1, 1, 2]} gap={6}>
-          <VStack align="start" gap={4}>
-            <HStack gap={3}>
-              <Heading size="xl" color="gray.700">
-                {selectedProduct.name}
-              </Heading>
-              {selectedProduct.new_product && (
-                <Badge colorPalette="blue" variant="solid" fontSize="sm">
-                  NEW
-                </Badge>
+    <div className="wrap view">
+      <nav className="crumbs" aria-label="Breadcrumb">
+        {/* preventScrollReset: the catalog scrolls the board's card into view itself */}
+        <Link to="/" viewTransition preventScrollReset>Boards</Link>/
+        <Link to={vendorPath(vendor.name)} viewTransition preventScrollReset>{vendor.name}</Link>/
+        <Link to={socPath(vendor.name, soc.name)} viewTransition preventScrollReset>{soc.name}</Link>/
+        <span>{board.name}</span>
+      </nav>
+
+      <section className="bhero">
+        <div className={`bench ${photo?.kind ?? "none"}`}>
+          {photo ? (
+            <img src={photo.src} alt={board.name} style={{ viewTransitionName: "board-photo" }} />
+          ) : (
+            <ChipArt soc={soc.name} vendor={vendor.name} />
+          )}
+          <span className="arch-tag">
+            {ARCH_UNAME[platform]} · {soc.name}
+          </span>
+        </div>
+        <div className="binfo">
+          <div className="ttl">
+            <StatusPill status={board.board_status} />
+            {board.new_product && <span className="new">NEW</span>}
+          </div>
+          <h1 style={{ viewTransitionName: "board-title" }}>{board.name}</h1>
+          <dl className="meta">
+            <dt>Maker</dt>
+            <dd>
+              {board.vendor_link ? (
+                <a href={board.vendor_link} target="_blank" rel="noopener noreferrer">{board.vendor}</a>
+              ) : (
+                board.vendor || "—"
               )}
-              {selectedProduct.link && (
-                <Button asChild size="sm" variant="ghost">
-                  <a href={selectedProduct.link} target="_blank" rel="noopener noreferrer">
-                    Product Page <ExternalLink size={14} />
-                  </a>
-                </Button>
+            </dd>
+            <dt>SoC</dt>
+            <dd>
+              {soc.link ? (
+                <a href={soc.link} target="_blank" rel="noopener noreferrer">{soc.name}</a>
+              ) : (
+                soc.name
               )}
-            </HStack>
-
-            <SimpleGrid columns={1} gap={4} w="100%">
-              <StatRoot>
-                <StatLabel>Vendor</StatLabel>
-                <StatValueText fontSize="lg">
-                  {selectedProduct.vendor_link ? (
-                    <Link href={selectedProduct.vendor_link} target="_blank" rel="noopener noreferrer" color="teal.500">
-                      {selectedProduct.vendor}
-                    </Link>
-                  ) : (
-                    selectedProduct.vendor
-                  )}
-                </StatValueText>
-              </StatRoot>
-
-              <StatRoot>
-                <StatLabel>SoC</StatLabel>
-                <StatValueText fontSize="lg">
-                  {selectedSoc.link ? (
-                    <Link href={selectedSoc.link} target="_blank" rel="noopener noreferrer" color="teal.500">
-                      {selectedSoc.name}
-                    </Link>
-                  ) : (
-                    selectedSoc.name
-                  )}
-                </StatValueText>
-                <StatHelpText>{categoryInfo.name}</StatHelpText>
-              </StatRoot>
-
-              <StatRoot>
-                <StatLabel>Status</StatLabel>
-                <StatValueText>
-                  <Badge
-                    colorPalette={getStatusBadgeColor(selectedProduct.board_status)}
-                    fontSize="md"
-                    px={3}
-                    py={1}
-                  >
-                    {selectedProduct.board_status}
-                  </Badge>
-                </StatValueText>
-                <StatHelpText>
-                  {selectedProduct.board_status === 'GA' && 'Generally Available'}
-                  {selectedProduct.board_status === 'DEV' && 'Development'}
-                  {selectedProduct.board_status === 'EOL' && 'End of Life'}
-                </StatHelpText>
-              </StatRoot>
-
-              {selectedProduct.wiki_page && (
-                <StatRoot>
-                  <StatLabel>Documentation</StatLabel>
-                  <StatValueText>
-                    <Button asChild size="sm" colorPalette="teal" variant="outline">
-                      <a href={selectedProduct.wiki_page} target="_blank" rel="noopener noreferrer">
-                        Wiki Page <ExternalLink size={14} />
-                      </a>
-                    </Button>
-                  </StatValueText>
-                </StatRoot>
-              )}
-            </SimpleGrid>
-          </VStack>
-
-          <Box>
-            {imageMap[selectedProduct.name] && (
-              <Image
-                src={imageMap[selectedProduct.name]}
-                alt={selectedProduct.name}
-                w="100%"
-                maxH="300px"
-                objectFit="contain"
-                borderRadius="lg"
-              />
-            )}
-          </Box>
-        </SimpleGrid>
-      </Box>
-
-      <TabsRoot defaultValue="overview" variant="enclosed" colorPalette="blue">
-        <TabsList>
-          {tabItems.map(item => (
-            <TabsTrigger key={item.value} value={item.value}>{item.label}</TabsTrigger>
-          ))}
-        </TabsList>
-
-        <TabsContent value="overview" px={0}>
-          <VStack gap={8} align="stretch">
-            {selectedProduct.features && Object.keys(selectedProduct.features).length > 0 && (
-              <Box>
-                <Heading size="lg" color="gray.700" mb={6}>
-                  Hardware Features
-                </Heading>
-                <Flex flexWrap="wrap" gap={3}>
-                  {Object.entries(selectedProduct.features).map(([feature, status]) =>
-                    status !== null ? (
-                      <Badge
-                        key={feature}
-                        colorPalette={getFeatureTagColor(status)}
-                        px={3}
-                        py={2}
-                        fontSize="sm"
-                      >
-                        {feature}
-                      </Badge>
-                    ) : null
-                  )}
-                </Flex>
-              </Box>
-            )}
-
-            <Box>
-              <Heading size="lg" color="gray.700" mb={6}>
-                Images & Downloads
-              </Heading>
-              <VStack gap={6} align="stretch">
-                {availableImages.length > 0 && (
-                  <Box>
-                    <Heading size="md" color="gray.700" mb={4}>
-                      Available Images
-                    </Heading>
-                    <VStack gap={4}>
-                      {availableImages.map((image, index) => (
-                        <Box key={index} w="100%" borderWidth="1px" borderRadius="md" p={5}>
-                          <VStack gap={4} align="stretch">
-                            <Flex justify="space-between" align="start" direction={["column", "row"]} gap={4}>
-                              <VStack align="start" gap={2} flex="1">
-                                <Heading size="sm" color="gray.700">
-                                  {image.name}
-                                </Heading>
-                                <HStack gap={4} flexWrap="wrap">
-                                  {image.latest_updated && (
-                                    <HStack gap={1}>
-                                      <Box color="gray.500"><Clock size={14} /></Box>
-                                      <Text fontSize="sm" color="gray.600">
-                                        {new Date(image.latest_updated).toLocaleDateString()}
-                                      </Text>
-                                    </HStack>
-                                  )}
-                                  {image.release && (
-                                    <Badge colorPalette="green" variant="outline">
-                                      Fedora {image.release}
-                                    </Badge>
-                                  )}
-                                </HStack>
-                                {image.changelog && typeof image.changelog === 'string' && image.changelog.trim() && (
-                                  <Box>
-                                    <Text fontSize="sm" fontWeight="semibold" color="gray.700">
-                                      Changelog:
-                                    </Text>
-                                    <Text fontSize="sm" color="gray.600" whiteSpace="pre-line">
-                                      {image.changelog}
-                                    </Text>
-                                  </Box>
-                                )}
-                              </VStack>
-
-                              <VStack gap={2} align={["stretch", "end"]}>
-                                <Button asChild colorPalette="blue" size="md" minW={["100%", "160px"]}>
-                                  <a href={image.link} target="_blank" rel="noopener noreferrer">
-                                    <DownloadIcon size={14} /> Download
-                                  </a>
-                                </Button>
-                                {image.link && (
-                                  <Button asChild variant="outline" size="sm" minW={["100%", "160px"]}>
-                                    <a href={new URL(image.link.substring(0, image.link.lastIndexOf('/') + 1)).href} target="_blank" rel="noopener noreferrer">
-                                      <History size={14} /> All Versions
-                                    </a>
-                                  </Button>
-                                )}
-                              </VStack>
-                            </Flex>
-
-                            {image.md5 && (
-                              <Box p={3} bg="gray.50" borderRadius="md">
-                                <Text fontSize="sm" fontWeight="semibold" color="gray.700" mb={2}>
-                                  MD5 Checksum:
-                                </Text>
-                                <HStack>
-                                  <Code fontSize="sm" flex="1" p={2}>
-                                    {image.md5}
-                                  </Code>
-                                  <Button
-                                    size="sm"
-                                    onClick={() => handleCopyMd5(image.md5)}
-                                    colorPalette={copiedMd5 === image.md5 ? "green" : "gray"}
-                                    variant="outline"
-                                  >
-                                    <Copy size={14} />
-                                    {copiedMd5 === image.md5 ? "Copied!" : "Copy"}
-                                  </Button>
-                                  <PopoverRoot>
-                                    <PopoverTrigger asChild>
-                                      <Button size="sm" variant="ghost">
-                                        <Info size={14} />
-                                      </Button>
-                                    </PopoverTrigger>
-                                    <PopoverPositioner>
-                                      <PopoverContent>
-                                        <PopoverArrow />
-                                        <PopoverCloseTrigger />
-                                        <PopoverHeader>Verify MD5</PopoverHeader>
-                                        <PopoverBody>
-                                          <Box as="ol" fontSize="sm" pl={4}>
-                                            <Box as="li" mb={1}>Download the file</Box>
-                                            <Box as="li" mb={1}>Run <Code>md5sum ./downloaded_file</Code></Box>
-                                            <Box as="li">Compare with MD5 provided here</Box>
-                                          </Box>
-                                        </PopoverBody>
-                                      </PopoverContent>
-                                    </PopoverPositioner>
-                                  </PopoverRoot>
-                                </HStack>
-                              </Box>
-                            )}
-                          </VStack>
-                        </Box>
-                      ))}
-                    </VStack>
-                  </Box>
-                )}
-
-                {unavailableImages.length > 0 && (
-                  <Box>
-                    <Heading size="md" color="gray.700" mb={4}>
-                      Upcoming Images
-                    </Heading>
-                    <Box bg="blue.50" p={4} borderRadius="md">
-                      <Flex align="center" gap={3}>
-                        <Box color="blue.500"><Info size={20} /></Box>
-                        <Box>
-                          <Text fontWeight="bold">Images in Development</Text>
-                          <Text fontSize="sm" color="gray.600">
-                            The following images are planned but not yet available for download.
-                          </Text>
-                        </Box>
-                      </Flex>
-                    </Box>
-                    <VStack gap={2} mt={4}>
-                      {unavailableImages.map((image, index) => (
-                        <Box key={index} p={3} border="1px solid" borderColor="gray.200" borderRadius="md" w="100%">
-                          <Text color="gray.600">
-                            {image.name} {selectedProduct.board_status === 'EOL' ? '(Not available - EOL)' : '(Coming soon)'}
-                          </Text>
-                        </Box>
-                      ))}
-                    </VStack>
-                  </Box>
-                )}
-
-                {availableImages.length === 0 && unavailableImages.length === 0 && (
-                  <Box bg="orange.50" p={4} borderRadius="md">
-                    <Flex align="center" gap={3}>
-                      <Box color="orange.500"><Info size={20} /></Box>
-                      <Box>
-                        <Text fontWeight="bold">No Images Available</Text>
-                        <Text fontSize="sm" color="gray.600">
-                          No images are currently available for this board.
-                        </Text>
-                      </Box>
-                    </Flex>
-                  </Box>
-                )}
-              </VStack>
-            </Box>
-          </VStack>
-        </TabsContent>
-
-        {mdMap[selectedProduct.name] && (
-          <TabsContent value="docs" px={0}>
-            <Box>
-              <ReactMarkdown
-                children={mdMap[selectedProduct.name]}
-                rehypePlugins={[rehypeRaw]}
-                components={{
-                  a: ({ node, ...props }) => (
-                    <Link {...props} color="teal.500" target="_blank" rel="noopener noreferrer" />
-                  ),
-                  details({ node, ...props }) {
-                    return (
-                      <Box
-                        as="details"
-                        p={4}
-                        border="1px solid"
-                        borderColor="gray.200"
-                        borderRadius="md"
-                        _open={{ bg: 'gray.100' }}
-                        {...props}
-                      />
-                    );
-                  },
-                  summary({ node, ...props }) {
-                    return (
-                      <Box
-                        as="summary"
-                        cursor="pointer"
-                        fontWeight="bold"
-                        _hover={{ color: 'teal.500' }}
-                        {...props}
-                      />
-                    );
-                  },
-                  p({ node, ...props }) {
-                    return <Text mt={2} {...props} />;
-                  },
-                  h1({ node, ...props }) {
-                    return <Heading as="h1" size="lg" mt={6} mb={4} {...props} />;
-                  },
-                  h2({ node, ...props }) {
-                    return <Heading as="h2" size="md" mt={6} mb={4} {...props} />;
-                  },
-                  h3({ node, ...props }) {
-                    return <Heading as="h3" size="sm" mt={6} mb={4} {...props} />;
-                  },
-                  h4({ node, ...props }) {
-                    return <Heading as="h4" size="xs" mt={6} mb={4} {...props} />;
-                  },
-                  h5({ node, ...props }) {
-                    return <Heading as="h5" size="xs" mt={6} mb={4} {...props} />;
-                  },
-                  h6({ node, ...props }) {
-                    return <Heading as="h6" size="xs" mt={6} mb={4} {...props} />;
-                  },
-                  code({ node, inline, className, children, ...props }) {
-                    const match = /language-(\w+)/.exec(className || '');
-                    return !inline && match ? (
-                      <SyntaxHighlighter
-                        style={solarizedlight}
-                        language={match[1]}
-                        PreTag="div"
-                        {...props}
-                      >
-                        {children}
-                      </SyntaxHighlighter>
-                    ) : (
-                      <Code colorPalette="gray" fontSize="inherit" {...props}>
-                        {children}
-                      </Code>
-                    );
-                  },
-                  ul({ node, ...props }) {
-                    return <Box as="ul" pl={4} mt={2} css={{ "& > li": { marginBottom: "0.5rem" } }} {...props} />;
-                  },
-                  ol({ node, ...props }) {
-                    return <Box as="ol" pl={4} mt={2} css={{ "& > li": { marginBottom: "0.5rem" } }} {...props} />;
-                  },
-                  li({ node, ...props }) {
-                    return <Box as="li" {...props} />;
-                  },
+              <small>{vendor.name}</small>
+            </dd>
+            <dt>Status</dt>
+            <dd>{STATUS_TEXT[board.board_status] ?? "Status not reported"}</dd>
+            <dt>Images</dt>
+            <dd>
+              {available.length} ready
+              {upcoming.length > 0 && <small>{upcoming.length} planned</small>}
+            </dd>
+          </dl>
+          <div className="links2">
+            {available.length > 0 && (
+              <a
+                className="btn btn-gold"
+                href="#downloads"
+                onClick={(e) => {
+                  e.preventDefault();
+                  pick("downloads");
+                  document.getElementById("downloads")?.scrollIntoView({ behavior: "smooth" });
                 }}
-              />
-            </Box>
-          </TabsContent>
+              >
+                {Icon.download} Download
+              </a>
+            )}
+            {board.link && (
+              <a className="btn btn-line" href={board.link} target="_blank" rel="noopener noreferrer">
+                Product page {Icon.external}
+              </a>
+            )}
+            {board.wiki_page && (
+              <a className="btn btn-line" href={board.wiki_page} target="_blank" rel="noopener noreferrer">
+                Wiki {Icon.external}
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <div className="tabs" role="tablist" id="downloads" style={{ scrollMarginTop: 80 }}>
+        {tabs.map(([k, label, n]) => (
+          <button key={k} role="tab" type="button" aria-selected={current === k} onClick={() => pick(k)}>
+            {label}
+            {n !== undefined && <small>{n}</small>}
+          </button>
+        ))}
+      </div>
+
+      <div className={`panel${animateTab ? " swap" : ""}`} key={current} role="tabpanel">
+        {current === "downloads" && (
+          <div>
+            {available.length > 0 && (
+              <div className="img-list">
+                {available.map((image) => (
+                  <ImageRow key={image.link} image={image} />
+                ))}
+              </div>
+            )}
+            {upcoming.length > 0 && (
+              <div className="upcoming">
+                <h3>Upcoming images</h3>
+                <p>Planned for this board but not published yet.</p>
+                <ul>
+                  {upcoming.map((image) => (
+                    <li key={image.name}>
+                      {image.name}
+                      <span>{board.board_status === "EOL" ? "not available · EOL" : "coming soon"}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {available.length === 0 && upcoming.length === 0 && (
+              <div className="empty">
+                <b>No images yet</b>
+                Nothing is published for this board at the moment.
+              </div>
+            )}
+          </div>
         )}
 
-        {testReportMap[selectedProduct.name] && (
-          <TabsContent value="tests" px={0}>
-            <Box borderWidth="1px" borderRadius="md" p={5}>
-              <VStack gap={4}>
-                <Heading size="md" color="gray.700">
-                  Test Report
-                </Heading>
-                <Text color="gray.600" textAlign="center">
-                  View detailed test results and compatibility information for this board.
-                </Text>
-                <Button asChild colorPalette="teal" size="lg">
-                  <a href={testReportMap[selectedProduct.name]} target="_blank" rel="noopener noreferrer">
-                    View Test Report <ExternalLink size={16} />
-                  </a>
-                </Button>
-              </VStack>
-            </Box>
-          </TabsContent>
+        {current === "hardware" && (
+          <div>
+            <h3 className="sect-h">Hardware test matrix</h3>
+            <p style={{ color: "var(--muted)", margin: 0 }}>What was checked on this board with the Fedora image.</p>
+            <div className="feat">
+              {features.map(([feature, state]) => (
+                <div key={feature}>
+                  {feature}
+                  <span className={`st ${FEATURE_CLASS[String(state).toLowerCase()] ?? "unknown"}`}>{state}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
 
-        <TabsContent value="discussion" px={0}>
-          <Box>
-            <Heading size="md" color="gray.700" mb={4}>
-              Discussion & Support
-            </Heading>
+        {current === "docs" && (
+          <Suspense fallback={<div className="loading" role="status"><i />Loading documentation</div>}>
+            <BoardDoc source={doc} />
+          </Suspense>
+        )}
+
+        {current === "tests" && (
+          <div className="disc">
+            <b>Test report for {board.name}</b>
+            Detailed test results and compatibility notes are on the FVF blog.
+            <br />
+            <a className="btn btn-gold" style={{ marginTop: 18 }} href={testReport} target="_blank" rel="noopener noreferrer">
+              Open test report {Icon.external}
+            </a>
+          </div>
+        )}
+
+        {current === "discussion" && (
+          <div className="giscus-wrap">
+            <h3 className="sect-h">Discussion &amp; support</h3>
             <Giscus
               key={productName}
               id="comments"
@@ -518,13 +357,13 @@ export default function ProductDetails({ data }) {
               emitMetadata="0"
               inputPosition="top"
               reactionsEnabled="0"
-              theme="light"
+              theme="preferred_color_scheme"
               lang="en"
               loading="lazy"
             />
-          </Box>
-        </TabsContent>
-      </TabsRoot>
-    </VStack>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

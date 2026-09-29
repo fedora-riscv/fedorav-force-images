@@ -3,6 +3,7 @@ import eswinMd from './md/eswin.md?raw';
 import licheepi4aMd from './md/licheepi4a.md?raw';
 import qemuMd from './md/qemu.md?raw';
 import a210Md from './md/a210.md?raw';
+import boardImages from './boardImages.json';
 
 export const getPlatformFromDomain = () => {
   const hostname = window.location.hostname;
@@ -25,6 +26,8 @@ export const getApiUrl = (platform) => {
   return `https://api.fedoravforce.org/stats/?platform=${platform}`;
 };
 
+// Source photos. After editing this map, run scripts/prepare-board-images.py
+// to regenerate the thumbnails in public/boards and src/boardImages.json.
 export const imageMap = {
   'BeagleV Ahead': '/images/beaglev-ahead.webp',
   'Duo 256M': '/images/duo-256m.webp',
@@ -81,4 +84,17 @@ export const mdMap = {
 export const testReportMap = {
   'DC-ROMA I': 'https://blog.fedoravforce.com/test-reports/roma-i/',
   'DC-ROMA II': 'https://blog.fedoravforce.com/test-reports/roma-ii/',
+};
+
+const lower = (m) => Object.fromEntries(Object.keys(m).map((k) => [k.toLowerCase(), k]));
+const processedKeys = lower(boardImages);
+const sourceKeys = lower(imageMap);
+
+// Board photo for a board name, matched case-insensitively.
+// kind: "alpha" | "cut" (transparent background) or "photo" (shown full-bleed).
+export const getBoardPhoto = (name) => {
+  const key = String(name).toLowerCase();
+  if (processedKeys[key]) return boardImages[processedKeys[key]];
+  if (sourceKeys[key]) return { src: imageMap[sourceKeys[key]], kind: "photo" };
+  return null;
 };
