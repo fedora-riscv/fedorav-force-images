@@ -269,16 +269,40 @@ export default function ProductDetails() {
         </div>
       </section>
 
-      <div className="tabs" role="tablist" id="downloads" style={{ scrollMarginTop: 80 }}>
+      <div className="tabs" role="tablist" aria-label="Board sections" id="downloads" style={{ scrollMarginTop: 80 }}>
         {tabs.map(([k, label, n]) => (
-          <button key={k} role="tab" type="button" aria-selected={current === k} onClick={() => pick(k)}>
+          <button
+            key={k}
+            id={`tab-${k}`}
+            role="tab"
+            type="button"
+            aria-selected={current === k}
+            aria-controls="board-panel"
+            tabIndex={current === k ? 0 : -1}
+            onClick={() => pick(k)}
+            onKeyDown={(e) => {
+              const i = tabs.findIndex(([t]) => t === k);
+              const next = e.key === "ArrowRight" ? i + 1 : e.key === "ArrowLeft" ? i - 1 : null;
+              if (next === null) return;
+              e.preventDefault();
+              const [target] = tabs[(next + tabs.length) % tabs.length];
+              pick(target);
+              document.getElementById(`tab-${target}`)?.focus();
+            }}
+          >
             {label}
             {n !== undefined && <small>{n}</small>}
           </button>
         ))}
       </div>
 
-      <div className={`panel${animateTab ? " swap" : ""}`} key={current} role="tabpanel">
+      <div
+        className={`panel${animateTab ? " swap" : ""}`}
+        key={current}
+        id="board-panel"
+        role="tabpanel"
+        aria-labelledby={`tab-${current}`}
+      >
         {current === "downloads" && (
           <div>
             {available.length > 0 && (

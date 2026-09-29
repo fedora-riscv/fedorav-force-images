@@ -26,6 +26,9 @@ export const formatDate = (s) => {
   return t ? formatTime(t) : "";
 };
 
+// Giscus maps discussions by pathname. encodeURIComponent gives the same path the old
+// raw `/${name}` links produced for every current board name (spaces -> %20, ( ) _ kept);
+// check the thread mapping before renaming a board to something with + & , ; = : @ $.
 export const boardPath = (name) => `/${encodeURIComponent(name)}`;
 export const vendorPath = (vendor) => `/vendor/${encodeURIComponent(vendor)}`;
 export const socPath = (vendor, soc) => `${vendorPath(vendor)}/${slugify(soc)}`;
@@ -34,8 +37,8 @@ export const socPath = (vendor, soc) => `${vendorPath(vendor)}/${slugify(soc)}`;
 export const flattenBoards = (data) => {
   const out = [];
   for (const vendor of data?.result ?? []) {
-    for (const soc of vendor.soc) {
-      for (const board of soc.boards) {
+    for (const soc of vendor.soc ?? []) {
+      for (const board of soc.boards ?? []) {
         const images = board.images ?? [];
         const available = images.filter((i) => i.link);
         const latest = available.reduce((a, i) => Math.max(a, parseDate(i.latest_updated)), 0);

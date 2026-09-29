@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { transitionMemory } from "./components";
 
 const STEPS = [
   {
@@ -35,6 +37,11 @@ const STEPS = [
 ];
 
 export default function HowToBurnImagesToSDCards() {
+  // Leaving a board for the guide: the catalog should not try to morph back to that board later.
+  useEffect(() => {
+    transitionMemory.lastBoard = null;
+  }, []);
+
   return (
     <div className="wrap view">
       <div className="guide-h">

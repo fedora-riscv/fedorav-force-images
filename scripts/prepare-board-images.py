@@ -12,7 +12,7 @@ and records each result in src/boardImages.json as {src, kind}:
   photo  a real photo background that cannot be removed; shown full-bleed
 
 Run it again after adding or changing a board photo:
-    pip install pillow numpy
+    pip install 'pillow>=11.3' numpy     # 11.3+ reads the .avif sources
     python3 scripts/prepare-board-images.py
 """
 import json
@@ -37,7 +37,10 @@ def slug(name):
 
 def image_map():
     src = (ROOT / "src" / "config.js").read_text()
-    block = re.search(r"export const imageMap = \{(.*?)\n\};", src, re.S).group(1)
+    m = re.search(r"export const imageMap = \{(.*?)\n\};", src, re.S)
+    if not m:
+        raise SystemExit("imageMap not found in src/config.js")
+    block = m.group(1)
     return re.findall(r"""['"]([^'"]+)['"]\s*:\s*['"]/images/([^'"]+)['"]""", block)
 
 
@@ -94,6 +97,7 @@ def process(path):
 def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     result = {}
+    written = set()
     for name, file in image_map():
         path = SRC_IMAGES / file
         if not path.exists():
@@ -101,9 +105,16 @@ def main():
             continue
         im, kind = process(path)
         target = OUT_DIR / f"{slug(name)}.webp"
+        if target.name in written:
+            raise SystemExit(f"two boards map to {target.name}; rename one of them in imageMap")
+        written.add(target.name)
         im.save(target, "WEBP", quality=80, method=6)
         result[name] = {"src": f"/boards/{target.name}", "kind": kind}
         print(f"{kind:6} {name}")
+    for stale in OUT_DIR.glob("*.webp"):
+        if stale.name not in written:
+            stale.unlink()
+            print(f"removed {stale.name} (no longer in imageMap)")
     OUT_JSON.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n")
     print(f"wrote {len(result)} images to {OUT_DIR.relative_to(ROOT)} and {OUT_JSON.relative_to(ROOT)}")
 
