@@ -51,10 +51,6 @@
     "src": "/boards/pioneer.webp",
     "kind": "cut"
   },
-  "DC-ROMA II": {
-    "src": "/boards/dc-roma-ii.webp",
-    "kind": "alpha"
-  },
   "VisionFive V2": {
     "src": "/boards/visionfive-v2.webp",
     "kind": "cut"
@@ -70,10 +66,6 @@
   "NANHU_V2_DEV_BOARD V01": {
     "src": "/boards/nanhu-v2-dev-board-v01.webp",
     "kind": "photo"
-  },
-  "DC-ROMA I": {
-    "src": "/boards/dc-roma-i.webp",
-    "kind": "alpha"
   },
   "Oasis": {
     "src": "/boards/oasis.webp",
@@ -101,10 +93,6 @@
   },
   "Unmatched": {
     "src": "/boards/unmatched.webp",
-    "kind": "alpha"
-  },
-  "Framework": {
-    "src": "/boards/framework.webp",
     "kind": "alpha"
   },
   "Titan": {

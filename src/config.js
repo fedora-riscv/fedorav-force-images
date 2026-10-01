@@ -42,12 +42,10 @@ export const imageMap = {
   'Meles': '/images/meles.webp',
   'Muse book': '/images/musebook.webp',
   'Pioneer': '/images/pionner.webp',
-  'DC-ROMA II': '/images/roma-ii.webp',
   'VisionFive V2': '/images/vision-five-2.webp',
   'EIC7700-EVB': '/images/eic7700fg-evb.webp',
   'RuyiBook': '/images/ruyibook.webp',
   'NANHU_V2_DEV_BOARD V01': '/images/nanhu-v2.webp',
-  'DC-ROMA I': '/images/roma.webp',
   'Oasis': '/images/sg2380.webp',
   'Megrez': '/images/megrez.webp',
   'MUSE N1': '/images/muse-n1.webp',
@@ -55,7 +53,6 @@ export const imageMap = {
   'QEMU': '/images/qemu.webp',
   'HiFive Premier P550': '/images/hifive-premier-p550.avif',
   'Unmatched': '/images/unmatched.avif',
-  'Framework': '/images/framework.webp',
   'Titan': '/images/titan.webp',
   'Taurus': '/images/taurus.webp',
   'UR-DP1000-EVB': '/images/ur-dp1000-evb.webp',
@@ -79,11 +76,6 @@ export const mdMap = {
   'LicheePi 4A': licheepi4aMd,
   'QEMU': qemuMd,
   "A210": a210Md,
-};
-
-export const testReportMap = {
-  'DC-ROMA I': 'https://blog.fedoravforce.com/test-reports/roma-i/',
-  'DC-ROMA II': 'https://blog.fedoravforce.com/test-reports/roma-ii/',
 };
 
 const lower = (m) => Object.fromEntries(Object.keys(m).map((k) => [k.toLowerCase(), k]));

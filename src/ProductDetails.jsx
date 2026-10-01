@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Link, useOutletContext, useParams } from "react-router-dom";
 import Giscus from "@giscus/react";
-import { getBoardPhoto, mdMap, testReportMap } from "./config";
+import { getBoardPhoto, mdMap } from "./config";
 import { ChipArt, Icon, StatusPill, transitionMemory } from "./components";
 import {
   ARCH_NAME,
@@ -172,14 +172,12 @@ export default function ProductDetails() {
       ? Object.entries(board.features).filter(([, s]) => s !== null)
       : [];
   const doc = mdMap[board.name];
-  const testReport = testReportMap[board.name];
   const photo = getBoardPhoto(board.name);
 
   const tabs = [
     ["downloads", "Downloads", available.length],
     ...(features.length ? [["hardware", "Hardware", features.length]] : []),
     ...(doc ? [["docs", "Documentation"]] : []),
-    ...(testReport ? [["tests", "Test report"]] : []),
     ["discussion", "Discussion"],
   ];
   const current = tabs.some(([k]) => k === tab) ? tab : "downloads";
@@ -354,17 +352,6 @@ export default function ProductDetails() {
           <Suspense fallback={<div className="loading" role="status"><i />Loading documentation</div>}>
             <BoardDoc source={doc} />
           </Suspense>
-        )}
-
-        {current === "tests" && (
-          <div className="disc">
-            <b>Test report for {board.name}</b>
-            Detailed test results and compatibility notes are on the FVF blog.
-            <br />
-            <a className="btn btn-gold" style={{ marginTop: 18 }} href={testReport} target="_blank" rel="noopener noreferrer">
-              Open test report {Icon.external}
-            </a>
-          </div>
         )}
 
         {current === "discussion" && (
