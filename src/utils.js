@@ -1,6 +1,5 @@
 export const ARCH_NAME = { riscv: "RISC-V", arm: "ARM" };
 export const ARCH_UNAME = { riscv: "riscv64", arm: "aarch64" };
-export const STATUS_TEXT = { GA: "Generally available", DEV: "In development", EOL: "End of life" };
 
 export const slugify = (s) =>
   String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");

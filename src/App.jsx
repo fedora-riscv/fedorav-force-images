@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useState } from "react";
 import {
   createBrowserRouter,
   Link,
@@ -9,11 +9,13 @@ import {
 } from "react-router-dom";
 import { getApiUrl, getPlatformFromDomain, isDomainSpecific } from "./config";
 import { ARCH_NAME } from "./utils";
+import { I18nProvider, LOCALES, useI18n } from "./i18n";
 import HomePage from "./HomePage";
 import ProductDetails from "./ProductDetails";
 import HowToBurnImagesToSDCards from "./HowToBurnImagesToSDCards";
 
 function Layout() {
+  const { lang, setLang, t, tag } = useI18n();
   const [platform] = useState(getPlatformFromDomain());
   const [isSpecificDomain] = useState(isDomainSpecific());
   const [data, setData] = useState(null);
@@ -38,9 +40,10 @@ function Layout() {
     };
   }, [platform, attempt]);
 
-  useEffect(() => {
-    document.title = `Fedora-V Force Images for ${ARCH_NAME[platform]}`;
-  }, [platform]);
+  // Layout effect: runs before the board page's own title effect, so that one wins on board pages.
+  useLayoutEffect(() => {
+    document.title = t("meta.title", { arch: ARCH_NAME[platform] });
+  }, [platform, t]);
 
   // Each platform has its own domain; elsewhere (local dev, previews) the choice is remembered locally.
   const changePlatform = (next) => {
@@ -64,21 +67,28 @@ function Layout() {
     <>
       <header className="top">
         <div className="wrap">
-          <Link className="brand" to="/" viewTransition aria-label="Fedora-V Force Images home">
+          <Link className="brand" to="/" viewTransition aria-label={t("nav.homeAria")}>
             <img src="/images/fvf-torch.png" alt="" />
             <b>Fedora-V Force</b>
             <span>IMAGES</span>
           </Link>
-          <nav className="links" aria-label="Main">
-            <NavLink to="/" end viewTransition>Boards</NavLink>
-            <NavLink to="/how-to-burn-images-to-sd-cards" viewTransition>Install guide</NavLink>
+          <nav className="links" aria-label={t("nav.main")}>
+            <NavLink to="/" end viewTransition>{t("nav.boards")}</NavLink>
+            <NavLink to="/how-to-burn-images-to-sd-cards" viewTransition>{t("nav.guide")}</NavLink>
             <a href="https://www.fedoravforce.org">fedoravforce.org ↗</a>
             <a href="https://github.com/fedora-riscv">GitHub ↗</a>
           </nav>
-          <div className="arch" role="group" aria-label="Architecture">
+          <div className="arch" role="group" aria-label={t("nav.arch")}>
             {["riscv", "arm"].map((p) => (
               <button key={p} type="button" aria-pressed={platform === p} onClick={() => changePlatform(p)}>
                 {ARCH_NAME[p]}
+              </button>
+            ))}
+          </div>
+          <div className="arch lang" role="group" aria-label={t("nav.language")}>
+            {Object.entries(LOCALES).map(([code, l]) => (
+              <button key={code} type="button" lang={l.tag} aria-pressed={lang === code} onClick={() => setLang(code)}>
+                {l.label}
               </button>
             ))}
           </div>
@@ -91,18 +101,18 @@ function Layout() {
         ) : error ? (
           <div className="wrap" style={{ paddingBlock: 96 }}>
             <div className="empty">
-              <b>Board list did not load</b>
-              The image server did not answer ({error.message}). Check your connection and try again.
+              <b>{t("load.failedTitle")}</b>
+              {t("load.failedText", { error: error.message })}
               <br />
               <button className="btn btn-line btn-sm" type="button" onClick={retry} style={{ marginTop: 14 }}>
-                Try again
+                {t("load.retry")}
               </button>
             </div>
           </div>
         ) : (
           <div className="loading" role="status">
             <i />
-            Loading {ARCH_NAME[platform]} boards
+            {t("load.loading", { arch: ARCH_NAME[platform] })}
           </div>
         )}
       </main>
@@ -111,14 +121,17 @@ function Layout() {
         <div className="wrap">
           <span>
             {data
-              ? `Last updated ${new Date(data.latest_updated * 1000).toLocaleString()} · ${ARCH_NAME[platform]}`
+              ? t("footer.updated", {
+                  time: new Date(data.latest_updated * 1000).toLocaleString(tag),
+                  arch: ARCH_NAME[platform],
+                })
               : ARCH_NAME[platform]}
           </span>
           <nav>
             <a href="https://www.fedoravforce.org">Fedora-V Force</a>
-            <a href="https://blog.fedoravforce.com">Blog</a>
+            <a href="https://blog.fedoravforce.com">{t("footer.blog")}</a>
             <a href="https://openkoji.iscas.ac.cn/">openkoji</a>
-            <a href="https://github.com/fedora-riscv/fedorav-force-images">Source</a>
+            <a href="https://github.com/fedora-riscv/fedorav-force-images">{t("footer.source")}</a>
           </nav>
         </div>
       </footer>
@@ -141,5 +154,9 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <I18nProvider>
+      <RouterProvider router={router} />
+    </I18nProvider>
+  );
 }

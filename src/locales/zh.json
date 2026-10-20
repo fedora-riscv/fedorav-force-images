@@ -1,0 +1,156 @@
+{
+  "meta": {
+    "title": "Fedora-V Force {arch} 镜像",
+    "boardTitle": "{board} · Fedora-V Force 镜像"
+  },
+  "nav": {
+    "homeAria": "Fedora-V Force 镜像站首页",
+    "main": "主导航",
+    "boards": "板卡",
+    "guide": "安装指南",
+    "arch": "架构",
+    "language": "语言"
+  },
+  "load": {
+    "failedTitle": "板卡列表加载失败",
+    "failedText": "镜像服务器没有响应（{error}）。请检查网络后重试。",
+    "retry": "重试",
+    "loading": "正在加载 {arch} 板卡",
+    "docs": "正在加载文档"
+  },
+  "footer": {
+    "updated": "最后更新 {time} · {arch}",
+    "blog": "博客",
+    "source": "源码"
+  },
+  "status": {
+    "all": "全部",
+    "unknown": "未知",
+    "GA": "正式可用",
+    "DEV": "开发中",
+    "EOL": "已停止支持",
+    "none": "未报告状态"
+  },
+  "card": {
+    "new": "新品",
+    "images": { "other": "{n} 个镜像" },
+    "ready": "可下载",
+    "soon": "即将推出",
+    "package": "{soc} 芯片封装"
+  },
+  "home": {
+    "line1": "选好板子，",
+    "line2": "刷入 {fedora}",
+    "fedora": "Fedora。",
+    "searchPlaceholder": "搜索 {n} 款板卡、SoC 或厂商",
+    "searchAria": "搜索板卡",
+    "statBoards": "款板卡",
+    "statImages": "个镜像",
+    "statVendors": "家芯片厂商",
+    "statNew": "款新品",
+    "recentAria": "最近更新的镜像",
+    "recent": "最近更新",
+    "vendors": "芯片厂商",
+    "vendorChips": "芯片厂商",
+    "help": "帮助",
+    "helpFlash": "如何烧录 SD 卡 →",
+    "helpReports": "博客上的测试报告 ↗",
+    "allBoards": "全部板卡",
+    "shown": "显示 {n} 款",
+    "statusAria": "板卡状态",
+    "statusLabel": "状态",
+    "boardCount": { "other": "{n} 款板卡" },
+    "socMissing": "{vendor} 下没有 SoC“{soc}”",
+    "socMissingText": "已改为显示 {vendor} 的全部板卡。",
+    "vendorMissing": "没有名为“{vendor}”的厂商",
+    "vendorMissingText": "它可能在另一个架构的列表里。",
+    "showAll": "显示全部板卡",
+    "noMatch": "没有匹配“{query}”的板卡",
+    "noStatus": "没有该状态的板卡",
+    "emptyHint": "试试板卡、SoC 或厂商名，比如“K1”“TH1520”或“Milk-V”。",
+    "clear": "清除搜索和筛选"
+  },
+  "board": {
+    "notFound": "找不到这块板卡",
+    "notFoundText": "“{board}”不在 {arch} 列表中。它可能已经改名，也可能是 {other} 板卡。",
+    "back": "返回全部板卡",
+    "crumbs": "当前位置",
+    "maker": "制造商",
+    "soc": "SoC",
+    "status": "状态",
+    "images": "镜像",
+    "ready": "{n} 个可下载",
+    "planned": "{n} 个计划中",
+    "download": "下载",
+    "productPage": "产品页",
+    "wiki": "Wiki",
+    "sections": "板卡信息分区",
+    "tabDownloads": "下载",
+    "tabHardware": "硬件",
+    "tabDocs": "文档",
+    "tabDiscussion": "讨论",
+    "upcoming": "即将发布的镜像",
+    "upcomingText": "已为这块板卡计划，但还没有发布。",
+    "upcomingEol": "不再提供 · 已停止支持",
+    "upcomingSoon": "即将推出",
+    "noImages": "暂无镜像",
+    "noImagesText": "这块板卡目前还没有发布任何镜像。",
+    "matrix": "硬件测试矩阵",
+    "matrixText": "在这块板卡上用 Fedora 镜像实测过的功能。",
+    "discussion": "讨论与支持"
+  },
+  "image": {
+    "allVersions": "所有版本",
+    "copy": "复制",
+    "copied": "已复制",
+    "verify": "如何校验",
+    "changelog": "更新日志",
+    "verifyCd": "# 在下载目录中执行",
+    "verifyMatch": "# 输出的哈希必须和上面一致",
+    "update": "更新"
+  },
+  "guide": {
+    "eyebrow": "安装指南",
+    "title": "把 Fedora 烧录到 SD 卡。",
+    "lead": "用 balenaEtcher 五步完成，Linux、macOS 和 Windows 都适用。",
+    "need": "你需要",
+    "needItems": [
+      "一张 8 GB 或更大的 SD 卡",
+      "一台带 SD 读卡器的电脑",
+      "网络连接",
+      "balenaEtcher"
+    ],
+    "before": "开始之前",
+    "beforeItems": [
+      "SD 卡上的所有数据都会被清除",
+      "烧录可能需要 10 到 30 分钟",
+      "烧录过程中不要拔出 SD 卡",
+      "如果列出了 MD5 校验值，请先核对"
+    ],
+    "steps": [
+      {
+        "title": "下载 Fedora 镜像",
+        "text": "在本站找到你的板卡，下载最新的 Fedora 镜像。视板卡而定，提供 GNOME、KDE Plasma 和 Xfce 等版本。"
+      },
+      {
+        "title": "安装 balenaEtcher",
+        "text": "下载并安装 {etcher}，这是一款跨平台的系统镜像烧录工具，可以写入 SD 卡和 U 盘。"
+      },
+      {
+        "title": "选择镜像文件",
+        "text": "打开 balenaEtcher，点击“Flash from file”，选择下载好的 Fedora 镜像。"
+      },
+      {
+        "title": "选择 SD 卡",
+        "text": "插入 SD 卡，点击“Select target”，把它选为目标设备。"
+      },
+      {
+        "title": "开始烧录",
+        "text": "点击“Flash”开始把镜像写入 SD 卡，需要几分钟。"
+      }
+    ],
+    "done": "上电启动，{v}",
+    "doneEmphasis": "大功告成。",
+    "browse": "浏览板卡 →"
+  }
+}

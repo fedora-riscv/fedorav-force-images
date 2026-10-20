@@ -6,7 +6,6 @@ import { ChipArt, Icon, StatusPill, transitionMemory } from "./components";
 import {
   ARCH_NAME,
   ARCH_UNAME,
-  STATUS_TEXT,
   directoryUrl,
   fileName,
   findBoard,
@@ -15,12 +14,14 @@ import {
   socPath,
   vendorPath,
 } from "./utils";
+import { useI18n } from "./i18n";
 
 const FEATURE_CLASS = { ok: "ok", ng: "ng", warning: "warning" };
 
 const BoardDoc = lazy(() => import("./BoardDoc"));
 
 function ImageRow({ image }) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(null);
   const [copied, setCopied] = useState(false);
   const codeRef = useRef(null);
@@ -57,10 +58,10 @@ function ImageRow({ image }) {
       </div>
       <div className="act">
         <a className="btn btn-gold" href={image.link} target="_blank" rel="noopener noreferrer">
-          {Icon.download} Download
+          {Icon.download} {t("board.download")}
         </a>
         <a className="btn btn-line btn-sm" href={directoryUrl(image.link)} target="_blank" rel="noopener noreferrer">
-          {Icon.history} All versions
+          {Icon.history} {t("image.allVersions")}
         </a>
       </div>
       {(image.md5 || changelog) && (
@@ -70,19 +71,19 @@ function ImageRow({ image }) {
               <span className="k">MD5</span>
               <code ref={codeRef} tabIndex={0}>{image.md5}</code>
               <button className="btn btn-line btn-sm" type="button" onClick={copy}>
-                {Icon.copy} {copied ? "Copied" : "Copy"}
+                {Icon.copy} {copied ? t("image.copied") : t("image.copy")}
               </button>
             </div>
           )}
           <div className="row2">
             {image.md5 && (
               <button className="tgl" type="button" aria-expanded={open === "verify"} onClick={() => toggle("verify")}>
-                How to verify
+                {t("image.verify")}
               </button>
             )}
             {changelog && (
               <button className="tgl" type="button" aria-expanded={open === "log"} onClick={() => toggle("log")}>
-                Changelog
+                {t("image.changelog")}
               </button>
             )}
           </div>
@@ -90,13 +91,13 @@ function ImageRow({ image }) {
             <div className={`drawer${open === "verify" ? " open" : ""}`}>
               <div>
                 <pre>
-                  <span className="c"># in the folder you downloaded to</span>
+                  <span className="c">{t("image.verifyCd")}</span>
                   {"\n"}
                   <span className="p">$ </span>md5sum {name}
                   {"\n"}
                   {image.md5}  {name}
                   {"\n"}
-                  <span className="c"># the hash must match the one above</span>
+                  <span className="c">{t("image.verifyMatch")}</span>
                 </pre>
               </div>
             </div>
@@ -116,7 +117,7 @@ function ImageRow({ image }) {
                                 {l}
                               </span>
                             ))
-                          : "update"}
+                          : t("image.update")}
                       </div>
                     </li>
                   ))}
@@ -131,6 +132,7 @@ function ImageRow({ image }) {
 }
 
 export default function ProductDetails() {
+  const { t, tag } = useI18n();
   const { data, platform } = useOutletContext();
   const { productName } = useParams();
   const found = findBoard(data, productName);
@@ -142,23 +144,30 @@ export default function ProductDetails() {
     setAnimateTab(false);
     if (found) {
       transitionMemory.lastBoard = found.board.name;
-      document.title = `${found.board.name} · Fedora-V Force Images`;
     }
-    return () => {
-      document.title = `Fedora-V Force Images for ${ARCH_NAME[platform]}`;
-    };
   }, [productName]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!found) return;
+    document.title = t("meta.boardTitle", { board: found.board.name });
+    return () => {
+      document.title = t("meta.title", { arch: ARCH_NAME[platform] });
+    };
+  }, [productName, t]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!found) {
     return (
       <div className="wrap" style={{ paddingBlock: 96 }}>
         <div className="empty view">
-          <b>Board not found</b>
-          “{productName}” is not in the {ARCH_NAME[platform]} list. It may have been renamed, or it may be an{" "}
-          {platform === "arm" ? "RISC-V" : "ARM"} board.
+          <b>{t("board.notFound")}</b>
+          {t("board.notFoundText", {
+            board: productName,
+            arch: ARCH_NAME[platform],
+            other: ARCH_NAME[platform === "arm" ? "riscv" : "arm"],
+          })}
           <br />
           <Link className="btn btn-line btn-sm" to="/" style={{ marginTop: 14 }}>
-            Back to all boards
+            {t("board.back")}
           </Link>
         </div>
       </div>
@@ -175,10 +184,10 @@ export default function ProductDetails() {
   const photo = getBoardPhoto(board.name);
 
   const tabs = [
-    ["downloads", "Downloads", available.length],
-    ...(features.length ? [["hardware", "Hardware", features.length]] : []),
-    ...(doc ? [["docs", "Documentation"]] : []),
-    ["discussion", "Discussion"],
+    ["downloads", t("board.tabDownloads"), available.length],
+    ...(features.length ? [["hardware", t("board.tabHardware"), features.length]] : []),
+    ...(doc ? [["docs", t("board.tabDocs")]] : []),
+    ["discussion", t("board.tabDiscussion")],
   ];
   const current = tabs.some(([k]) => k === tab) ? tab : "downloads";
   const pick = (k) => {
@@ -188,9 +197,9 @@ export default function ProductDetails() {
 
   return (
     <div className="wrap view">
-      <nav className="crumbs" aria-label="Breadcrumb">
+      <nav className="crumbs" aria-label={t("board.crumbs")}>
         {/* preventScrollReset: the catalog scrolls the board's card into view itself */}
-        <Link to="/" viewTransition preventScrollReset>Boards</Link>/
+        <Link to="/" viewTransition preventScrollReset>{t("nav.boards")}</Link>/
         <Link to={vendorPath(vendor.name)} viewTransition preventScrollReset>{vendor.name}</Link>/
         <Link to={socPath(vendor.name, soc.name)} viewTransition preventScrollReset>{soc.name}</Link>/
         <span>{board.name}</span>
@@ -210,11 +219,11 @@ export default function ProductDetails() {
         <div className="binfo">
           <div className="ttl">
             <StatusPill status={board.board_status} />
-            {board.new_product && <span className="new">NEW</span>}
+            {board.new_product && <span className="new">{t("card.new")}</span>}
           </div>
           <h1 style={{ viewTransitionName: "board-title" }}>{board.name}</h1>
           <dl className="meta">
-            <dt>Maker</dt>
+            <dt>{t("board.maker")}</dt>
             <dd>
               {board.vendor_link ? (
                 <a href={board.vendor_link} target="_blank" rel="noopener noreferrer">{board.vendor}</a>
@@ -222,7 +231,7 @@ export default function ProductDetails() {
                 board.vendor || "—"
               )}
             </dd>
-            <dt>SoC</dt>
+            <dt>{t("board.soc")}</dt>
             <dd>
               {soc.link ? (
                 <a href={soc.link} target="_blank" rel="noopener noreferrer">{soc.name}</a>
@@ -231,12 +240,12 @@ export default function ProductDetails() {
               )}
               <small>{vendor.name}</small>
             </dd>
-            <dt>Status</dt>
-            <dd>{STATUS_TEXT[board.board_status] ?? "Status not reported"}</dd>
-            <dt>Images</dt>
+            <dt>{t("board.status")}</dt>
+            <dd>{["GA", "DEV", "EOL"].includes(board.board_status) ? t(`status.${board.board_status}`) : t("status.none")}</dd>
+            <dt>{t("board.images")}</dt>
             <dd>
-              {available.length} ready
-              {upcoming.length > 0 && <small>{upcoming.length} planned</small>}
+              {t("board.ready", { n: available.length })}
+              {upcoming.length > 0 && <small>{t("board.planned", { n: upcoming.length })}</small>}
             </dd>
           </dl>
           <div className="links2">
@@ -250,24 +259,24 @@ export default function ProductDetails() {
                   document.getElementById("downloads")?.scrollIntoView({ behavior: "smooth" });
                 }}
               >
-                {Icon.download} Download
+                {Icon.download} {t("board.download")}
               </a>
             )}
             {board.link && (
               <a className="btn btn-line" href={board.link} target="_blank" rel="noopener noreferrer">
-                Product page {Icon.external}
+                {t("board.productPage")} {Icon.external}
               </a>
             )}
             {board.wiki_page && (
               <a className="btn btn-line" href={board.wiki_page} target="_blank" rel="noopener noreferrer">
-                Wiki {Icon.external}
+                {t("board.wiki")} {Icon.external}
               </a>
             )}
           </div>
         </div>
       </section>
 
-      <div className="tabs" role="tablist" aria-label="Board sections" id="downloads" style={{ scrollMarginTop: 80 }}>
+      <div className="tabs" role="tablist" aria-label={t("board.sections")} id="downloads" style={{ scrollMarginTop: 80 }}>
         {tabs.map(([k, label, n]) => (
           <button
             key={k}
@@ -312,13 +321,13 @@ export default function ProductDetails() {
             )}
             {upcoming.length > 0 && (
               <div className="upcoming">
-                <h3>Upcoming images</h3>
-                <p>Planned for this board but not published yet.</p>
+                <h3>{t("board.upcoming")}</h3>
+                <p>{t("board.upcomingText")}</p>
                 <ul>
                   {upcoming.map((image) => (
                     <li key={image.name}>
                       {image.name}
-                      <span>{board.board_status === "EOL" ? "not available · EOL" : "coming soon"}</span>
+                      <span>{board.board_status === "EOL" ? t("board.upcomingEol") : t("board.upcomingSoon")}</span>
                     </li>
                   ))}
                 </ul>
@@ -326,8 +335,8 @@ export default function ProductDetails() {
             )}
             {available.length === 0 && upcoming.length === 0 && (
               <div className="empty">
-                <b>No images yet</b>
-                Nothing is published for this board at the moment.
+                <b>{t("board.noImages")}</b>
+                {t("board.noImagesText")}
               </div>
             )}
           </div>
@@ -335,8 +344,8 @@ export default function ProductDetails() {
 
         {current === "hardware" && (
           <div>
-            <h3 className="sect-h">Hardware test matrix</h3>
-            <p style={{ color: "var(--muted)", margin: 0 }}>What was checked on this board with the Fedora image.</p>
+            <h3 className="sect-h">{t("board.matrix")}</h3>
+            <p style={{ color: "var(--muted)", margin: 0 }}>{t("board.matrixText")}</p>
             <div className="feat">
               {features.map(([feature, state]) => (
                 <div key={feature}>
@@ -349,16 +358,16 @@ export default function ProductDetails() {
         )}
 
         {current === "docs" && (
-          <Suspense fallback={<div className="loading" role="status"><i />Loading documentation</div>}>
+          <Suspense fallback={<div className="loading" role="status"><i />{t("load.docs")}</div>}>
             <BoardDoc source={doc} />
           </Suspense>
         )}
 
         {current === "discussion" && (
           <div className="giscus-wrap">
-            <h3 className="sect-h">Discussion &amp; support</h3>
+            <h3 className="sect-h">{t("board.discussion")}</h3>
             <Giscus
-              key={productName}
+              key={`${productName}|${tag}`}
               id="comments"
               repo="fedora-riscv/fedorav-force-images-discussions"
               repoId="R_kgDONI_toQ"
@@ -369,7 +378,7 @@ export default function ProductDetails() {
               inputPosition="top"
               reactionsEnabled="0"
               theme="preferred_color_scheme"
-              lang="en"
+              lang={tag}
               loading="lazy"
             />
           </div>

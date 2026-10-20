@@ -1,6 +1,7 @@
 import { Link, useViewTransitionState } from "react-router-dom";
 import { getBoardPhoto } from "./config";
 import { boardPath, formatTime, statusKey } from "./utils";
+import { useI18n } from "./i18n";
 
 // Name of the board page the visitor just left, so its card can morph back into place.
 export const transitionMemory = { lastBoard: null };
@@ -25,6 +26,7 @@ export const Icon = {
 
 // Boards without a photo get a drawn SoC package with the part number etched on it.
 export function ChipArt({ soc, vendor = "" }) {
+  const { t } = useI18n();
   const label = String(soc).replace(/（.*?）|\(.*?\)/g, "").trim();
   const size = Math.min(26, Math.max(11, 90 / (label.length * 0.6)));
   const pins = [];
@@ -38,7 +40,7 @@ export function ChipArt({ soc, vendor = "" }) {
     );
   }
   return (
-    <svg className="chipart" viewBox="0 0 200 200" role="img" aria-label={`${label} package`}>
+    <svg className="chipart" viewBox="0 0 200 200" role="img" aria-label={t("card.package", { soc: label })}>
       <g className="pins">{pins}</g>
       <rect className="pkg" x="36" y="36" width="128" height="128" rx="10" />
       <rect className="die" x="50" y="50" width="100" height="100" rx="5" />
@@ -56,10 +58,12 @@ export function ChipArt({ soc, vendor = "" }) {
 }
 
 export function StatusPill({ status }) {
-  return <span className={`pill ${statusKey(status)}`}>{status || "Unknown"}</span>;
+  const { t } = useI18n();
+  return <span className={`pill ${statusKey(status)}`}>{status || t("status.unknown")}</span>;
 }
 
 export function BoardCard({ item, index = 0, returning = false }) {
+  const { t } = useI18n();
   const { board, soc, vendor, available, latest, releases } = item;
   const to = boardPath(board.name);
   const opening = useViewTransitionState(to);
@@ -80,7 +84,7 @@ export function BoardCard({ item, index = 0, returning = false }) {
         )}
         <div className="tags">
           <StatusPill status={board.board_status} />
-          {board.new_product && <span className="new">NEW</span>}
+          {board.new_product && <span className="new">{t("card.new")}</span>}
         </div>
       </div>
       <div className="bd">
@@ -93,10 +97,10 @@ export function BoardCard({ item, index = 0, returning = false }) {
         </div>
         <div className="ft">
           <span>
-            <b>{available.length}</b> image{available.length === 1 ? "" : "s"}
+            {t("card.images", { count: available.length, n: <b>{available.length}</b> })}
             {releases[0] ? ` · F${releases[0]}` : ""}
           </span>
-          <span>{latest ? formatTime(latest) : available.length ? "ready" : "coming soon"}</span>
+          <span>{latest ? formatTime(latest) : available.length ? t("card.ready") : t("card.soon")}</span>
         </div>
       </div>
     </Link>

@@ -1,0 +1,156 @@
+{
+  "meta": {
+    "title": "Fedora-V Force Images for {arch}",
+    "boardTitle": "{board} · Fedora-V Force Images"
+  },
+  "nav": {
+    "homeAria": "Fedora-V Force Images home",
+    "main": "Main",
+    "boards": "Boards",
+    "guide": "Install guide",
+    "arch": "Architecture",
+    "language": "Language"
+  },
+  "load": {
+    "failedTitle": "Board list did not load",
+    "failedText": "The image server did not answer ({error}). Check your connection and try again.",
+    "retry": "Try again",
+    "loading": "Loading {arch} boards",
+    "docs": "Loading documentation"
+  },
+  "footer": {
+    "updated": "Last updated {time} · {arch}",
+    "blog": "Blog",
+    "source": "Source"
+  },
+  "status": {
+    "all": "All",
+    "unknown": "Unknown",
+    "GA": "Generally available",
+    "DEV": "In development",
+    "EOL": "End of life",
+    "none": "Status not reported"
+  },
+  "card": {
+    "new": "NEW",
+    "images": { "one": "{n} image", "other": "{n} images" },
+    "ready": "ready",
+    "soon": "coming soon",
+    "package": "{soc} package"
+  },
+  "home": {
+    "line1": "Pick a board.",
+    "line2": "Flash {fedora}",
+    "fedora": "Fedora.",
+    "searchPlaceholder": "Search {n} boards, SoCs or vendors",
+    "searchAria": "Search boards",
+    "statBoards": "boards",
+    "statImages": "images",
+    "statVendors": "chip vendors",
+    "statNew": "new",
+    "recentAria": "Recently updated images",
+    "recent": "Recently updated",
+    "vendors": "Chip vendors",
+    "vendorChips": "Chip vendor",
+    "help": "Help",
+    "helpFlash": "How to flash an SD card →",
+    "helpReports": "Test reports on the blog ↗",
+    "allBoards": "All boards",
+    "shown": "{n} shown",
+    "statusAria": "Board status",
+    "statusLabel": "Status",
+    "boardCount": { "one": "{n} board", "other": "{n} boards" },
+    "socMissing": "No SoC “{soc}” under {vendor}",
+    "socMissingText": "Showing all {vendor} boards instead.",
+    "vendorMissing": "No vendor called “{vendor}”",
+    "vendorMissingText": "It may be listed under the other architecture.",
+    "showAll": "Show all boards",
+    "noMatch": "No boards match “{query}”",
+    "noStatus": "No boards with this status",
+    "emptyHint": "Try a board, SoC or vendor name such as “K1”, “TH1520” or “Milk-V”.",
+    "clear": "Clear search and filters"
+  },
+  "board": {
+    "notFound": "Board not found",
+    "notFoundText": "“{board}” is not in the {arch} list. It may have been renamed, or it may be an {other} board.",
+    "back": "Back to all boards",
+    "crumbs": "Breadcrumb",
+    "maker": "Maker",
+    "soc": "SoC",
+    "status": "Status",
+    "images": "Images",
+    "ready": "{n} ready",
+    "planned": "{n} planned",
+    "download": "Download",
+    "productPage": "Product page",
+    "wiki": "Wiki",
+    "sections": "Board sections",
+    "tabDownloads": "Downloads",
+    "tabHardware": "Hardware",
+    "tabDocs": "Documentation",
+    "tabDiscussion": "Discussion",
+    "upcoming": "Upcoming images",
+    "upcomingText": "Planned for this board but not published yet.",
+    "upcomingEol": "not available · EOL",
+    "upcomingSoon": "coming soon",
+    "noImages": "No images yet",
+    "noImagesText": "Nothing is published for this board at the moment.",
+    "matrix": "Hardware test matrix",
+    "matrixText": "What was checked on this board with the Fedora image.",
+    "discussion": "Discussion & support"
+  },
+  "image": {
+    "allVersions": "All versions",
+    "copy": "Copy",
+    "copied": "Copied",
+    "verify": "How to verify",
+    "changelog": "Changelog",
+    "verifyCd": "# in the folder you downloaded to",
+    "verifyMatch": "# the hash must match the one above",
+    "update": "update"
+  },
+  "guide": {
+    "eyebrow": "Install guide",
+    "title": "Flash Fedora to an SD card.",
+    "lead": "Five steps with balenaEtcher. Works on Linux, macOS and Windows.",
+    "need": "You need",
+    "needItems": [
+      "An SD card, 8 GB or larger",
+      "A computer with an SD card reader",
+      "An internet connection",
+      "balenaEtcher"
+    ],
+    "before": "Before you start",
+    "beforeItems": [
+      "Everything on the SD card will be erased",
+      "Flashing can take 10 to 30 minutes",
+      "Do not remove the card while flashing",
+      "Check the MD5 checksum when one is listed"
+    ],
+    "steps": [
+      {
+        "title": "Download a Fedora image",
+        "text": "Pick your board on this site and download the latest Fedora image. GNOME, KDE Plasma and Xfce builds are available depending on the board."
+      },
+      {
+        "title": "Get balenaEtcher",
+        "text": "Download and install {etcher}, a cross-platform tool for flashing OS images to SD cards and USB drives."
+      },
+      {
+        "title": "Select the image file",
+        "text": "Open balenaEtcher, click “Flash from file” and choose the Fedora image you downloaded."
+      },
+      {
+        "title": "Choose the SD card",
+        "text": "Insert your SD card and click “Select target” to choose it as the destination device."
+      },
+      {
+        "title": "Flash the image",
+        "text": "Click “Flash” to start writing the image to the SD card. This takes several minutes."
+      }
+    ],
+    "done": "Boot it. {v}",
+    "doneEmphasis": "You’re done.",
+    "browse": "Browse boards →"
+  }
+}

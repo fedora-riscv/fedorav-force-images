@@ -44,7 +44,8 @@ nav.links a:hover,nav.links a[aria-current="page"]{color:#fff}
 .arch{display:flex;background:rgba(142,156,196,.12);border:1px solid var(--night-line);border-radius:999px;padding:3px;flex:none}
 .arch button{border:0;background:none;cursor:pointer;padding:7px 14px;border-radius:999px;font:600 12px/1 var(--mono);letter-spacing:.06em;color:var(--night-muted);transition:background .2s,color .2s}
 .arch button[aria-pressed="true"]{background:var(--gold);color:var(--gold-ink)}
-@media (max-width:820px){nav.links{display:none}.arch{margin-left:auto}}
+@media (max-width:820px){nav.links{display:none}.arch{margin-left:auto}.arch.lang{margin-left:0}header.top .wrap{gap:10px}}
+.arch.lang button{letter-spacing:.02em}
 @media (max-width:420px){.brand b{display:none}}
 
 /* hero: compact bar, title left, search right, recent-updates strip along the bottom */
@@ -326,6 +327,10 @@ footer a{text-decoration:none}footer a:hover{color:var(--night-ink)}
 ::view-transition-image-pair(board-title){isolation:auto}
 ::view-transition-old(board-title),::view-transition-new(board-title){height:100%;width:auto;mix-blend-mode:normal}
 ::view-transition-group(site-header){z-index:50}
+/* language switch: a plain crossfade of the whole page, no slide */
+:root[data-vt="lang"]::view-transition-old(root){animation:vt-fade .18s ease both}
+:root[data-vt="lang"]::view-transition-new(root){animation:vt-fade .26s ease reverse both}
+@keyframes vt-fade{to{opacity:0}}
 @keyframes vin{from{opacity:.001;transform:translateY(10px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}
   ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
@@ -340,3 +345,14 @@ img{max-width:100%}
 .giscus-wrap{max-width:860px}
 .quick .card{animation-delay:0s!important}
 a.chip{text-decoration:none;color:inherit;display:inline-flex;align-items:center}
+
+/* Chinese: CJK fallbacks after the Latin faces; no synthetic italics, tight tracking or sub-1 line height on CJK headings */
+:root:lang(zh){
+  --display:"Archivo","PingFang SC","Hiragino Sans GB","Noto Sans CJK SC","Source Han Sans SC","Microsoft YaHei",sans-serif;
+  --body:"Red Hat Text","PingFang SC","Hiragino Sans GB","Noto Sans CJK SC","Source Han Sans SC","Microsoft YaHei",system-ui,sans-serif;
+}
+:lang(zh) :is(.hero h1,.toolbar h2,.guide-h h1,.prep h3,.steps h3,.done h3,.sect-h,.upcoming h3){font-style:normal;letter-spacing:0}
+:lang(zh) .hero h1{line-height:1.15}
+:lang(zh) .log>span{max-width:5em}
+:lang(zh) .guide-h h1{line-height:1.1}
+:lang(zh) :is(.eyebrow,.stats,.log>span,.index h4,.filters .lab,.meta dt){letter-spacing:.04em}

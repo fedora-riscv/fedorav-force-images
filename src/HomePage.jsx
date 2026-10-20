@@ -14,19 +14,22 @@ import {
   statusKey,
   vendorPath,
 } from "./utils";
+import { useI18n } from "./i18n";
 
+// Labels are message keys; GA / DEV / EOL are shown as-is in every language.
 const STATUS_FILTERS = [
-  ["all", "All"],
-  ["GA", "GA"],
-  ["DEV", "DEV"],
-  ["EOL", "EOL"],
-  ["UNK", "Unknown"],
+  ["all", "status.all"],
+  ["GA", null],
+  ["DEV", null],
+  ["EOL", null],
+  ["UNK", "status.unknown"],
 ];
 
 // Search text and status filter survive a round trip to a board page.
 const filterMemory = { query: "", status: "all" };
 
 export default function HomePage() {
+  const { t } = useI18n();
   const { data, platform } = useOutletContext();
   const { vendorName, socSlug } = useParams();
   const [query, setQuery] = useState(filterMemory.query);
@@ -126,11 +129,11 @@ export default function HomePage() {
               </div>
               <h1>
                 <span className="ln">
-                  <span>Pick a board.</span>
+                  <span>{t("home.line1")}</span>
                 </span>{" "}
                 <span className="ln">
                   <span>
-                    Flash <span className="v">Fedora.</span>
+                    {t("home.line2", { fedora: <span className="v">{t("home.fedora")}</span> })}
                   </span>
                 </span>
               </h1>
@@ -143,24 +146,24 @@ export default function HomePage() {
                   ref={searchRef}
                   type="search"
                   autoComplete="off"
-                  placeholder={`Search ${all.length} boards, SoCs or vendors`}
-                  aria-label="Search boards"
+                  placeholder={t("home.searchPlaceholder", { n: all.length })}
+                  aria-label={t("home.searchAria")}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                 />
                 <kbd>/</kbd>
               </label>
               <div className="stats">
-                <span><b>{all.length}</b>boards</span>
-                <span><b>{imageCount}</b>images</span>
-                <span><b>{vendors.length}</b>chip vendors</span>
-                <span className="hot"><b>{newCount}</b>new</span>
+                <span><b>{all.length}</b>{t("home.statBoards")}</span>
+                <span><b>{imageCount}</b>{t("home.statImages")}</span>
+                <span><b>{vendors.length}</b>{t("home.statVendors")}</span>
+                <span className="hot"><b>{newCount}</b>{t("home.statNew")}</span>
               </div>
             </div>
           </div>
           {recent.length > 0 && (
-            <div className="log" aria-label="Recently updated images">
-              <span>Recently updated</span>
+            <div className="log" aria-label={t("home.recentAria")}>
+              <span>{t("home.recent")}</span>
               <ol>
                 {recent.map(({ x, image }) => {
                   const photo = getBoardPhoto(x.board.name);
@@ -177,7 +180,7 @@ export default function HomePage() {
                             {x.board.new_product && (
                               <>
                                 {" · "}
-                                <em>NEW</em>
+                                <em>{t("card.new")}</em>
                               </>
                             )}
                           </small>
@@ -193,8 +196,8 @@ export default function HomePage() {
       </section>
 
       <div className="wrap cat">
-        <aside className="index" aria-label="Chip vendors">
-          <h4>Chip vendors</h4>
+        <aside className="index" aria-label={t("home.vendors")}>
+          <h4>{t("home.vendors")}</h4>
           <ul>
             {vendors.map((v) => (
               <li key={v.name}>
@@ -213,15 +216,15 @@ export default function HomePage() {
             ))}
           </ul>
           <div className="help">
-            <h4>Help</h4>
-            <Link to="/how-to-burn-images-to-sd-cards" viewTransition>How to flash an SD card →</Link>
-            <a href="https://blog.fedoravforce.com">Test reports on the blog ↗</a>
+            <h4>{t("home.help")}</h4>
+            <Link to="/how-to-burn-images-to-sd-cards" viewTransition>{t("home.helpFlash")}</Link>
+            <a href="https://blog.fedoravforce.com">{t("home.helpReports")}</a>
           </div>
         </aside>
 
         <div ref={catalogRef} className="catalog" style={{ scrollMarginTop: 88 }}>
-          <div className="vchips" role="group" aria-label="Chip vendor">
-            <Link className="chip" to="/" aria-current={!vendor ? "page" : undefined}>All</Link>
+          <div className="vchips" role="group" aria-label={t("home.vendorChips")}>
+            <Link className="chip" to="/" aria-current={!vendor ? "page" : undefined}>{t("status.all")}</Link>
             {vendors.map((v) => (
               <Link key={v.name} className="chip" to={vendorPath(v.name)} aria-current={vendor === v ? "page" : undefined}>
                 {v.name}
@@ -238,15 +241,15 @@ export default function HomePage() {
               ) : vendor ? (
                 vendor.name
               ) : (
-                "All boards"
+                t("home.allBoards")
               )}
-              <small>{list.length} shown</small>
+              <small>{t("home.shown", { n: list.length })}</small>
             </h2>
-            <div className="filters" role="group" aria-label="Board status">
-              <span className="lab">Status</span>
+            <div className="filters" role="group" aria-label={t("home.statusAria")}>
+              <span className="lab">{t("home.statusLabel")}</span>
               {STATUS_FILTERS.filter(([k]) => k === "all" || counts[k]).map(([k, label]) => (
                 <button key={k} className="chip" type="button" aria-pressed={status === k} onClick={() => setStatus(k)}>
-                  {label} {counts[k]}
+                  {label ? t(label) : k} {counts[k]}
                 </button>
               ))}
               {vendor && (
@@ -259,16 +262,16 @@ export default function HomePage() {
 
           {socMissing && (
             <div className="empty" style={{ marginBottom: 28 }}>
-              <b>No SoC “{socSlug}” under {vendor.name}</b>
-              Showing all {vendor.name} boards instead.
+              <b>{t("home.socMissing", { soc: socSlug, vendor: vendor.name })}</b>
+              {t("home.socMissingText", { vendor: vendor.name })}
             </div>
           )}
           {vendorName && !vendor ? (
             <div className="empty">
-              <b>No vendor called “{vendorName}”</b>
-              It may be listed under the other architecture.
+              <b>{t("home.vendorMissing", { vendor: vendorName })}</b>
+              {t("home.vendorMissingText")}
               <br />
-              <Link className="btn btn-line btn-sm" to="/" style={{ marginTop: 14 }}>Show all boards</Link>
+              <Link className="btn btn-line btn-sm" to="/" style={{ marginTop: 14 }}>{t("home.showAll")}</Link>
             </div>
           ) : groups.length ? (
             <div
@@ -297,7 +300,7 @@ export default function HomePage() {
                       ))}
                     </span>
                     <span className="cnt">
-                      {items.length} board{items.length > 1 ? "s" : ""}
+                      {t("home.boardCount", { count: items.length, n: items.length })}
                     </span>
                   </div>
                   <div className="grid">
@@ -310,11 +313,11 @@ export default function HomePage() {
             </div>
           ) : (
             <div className="empty">
-              <b>{q ? `No boards match “${query}”` : "No boards with this status"}</b>
-              Try a board, SoC or vendor name such as “K1”, “TH1520” or “Milk-V”.
+              <b>{q ? t("home.noMatch", { query }) : t("home.noStatus")}</b>
+              {t("home.emptyHint")}
               <br />
               <button className="btn btn-line btn-sm" type="button" onClick={resetFilters} style={{ marginTop: 14 }}>
-                Clear search and filters
+                {t("home.clear")}
               </button>
             </div>
           )}
