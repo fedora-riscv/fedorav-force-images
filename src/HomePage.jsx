@@ -15,6 +15,7 @@ import {
   vendorPath,
 } from "./utils";
 import { useI18n } from "./i18n";
+import { VendorName, vendorSearchTerms } from "./vendors";
 
 // Labels are message keys; GA / DEV / EOL are shown as-is in every language.
 const STATUS_FILTERS = [
@@ -95,7 +96,7 @@ export default function HomePage() {
     if (soc && x.soc !== soc) return false;
     if (status !== "all" && statusKey(x.board.board_status) !== status) return false;
     if (!q) return true;
-    return [x.board.name, x.board.vendor, x.soc.name, x.vendor.name].some((s) =>
+    return [x.board.name, x.board.vendor, x.soc.name, ...vendorSearchTerms(x.vendor.name)].some((s) =>
       String(s ?? "").toLowerCase().includes(q)
     );
   });
@@ -202,7 +203,7 @@ export default function HomePage() {
             {vendors.map((v) => (
               <li key={v.name}>
                 <Link to={vendorPath(v.name)} aria-current={vendor === v && !soc ? "true" : undefined}>
-                  {v.name}
+                  <VendorName name={v.name} />
                   <small>{(v.soc ?? []).reduce((a, s) => a + (s.boards ?? []).length, 0)}</small>
                 </Link>
                 <div className="socs">
@@ -227,7 +228,7 @@ export default function HomePage() {
             <Link className="chip" to="/" aria-current={!vendor ? "page" : undefined}>{t("status.all")}</Link>
             {vendors.map((v) => (
               <Link key={v.name} className="chip" to={vendorPath(v.name)} aria-current={vendor === v ? "page" : undefined}>
-                {v.name}
+                <VendorName name={v.name} />
               </Link>
             ))}
           </div>
@@ -236,10 +237,10 @@ export default function HomePage() {
               {soc ? (
                 <>
                   {soc.name}
-                  <span className="of">{vendor.name}</span>
+                  <span className="of"><VendorName name={vendor.name} /></span>
                 </>
               ) : vendor ? (
-                vendor.name
+                <VendorName name={vendor.name} />
               ) : (
                 t("home.allBoards")
               )}
@@ -254,7 +255,7 @@ export default function HomePage() {
               ))}
               {vendor && (
                 <Link className="chip" to="/">
-                  ✕ {soc ? soc.name : vendor.name}
+                  ✕ {soc ? soc.name : <VendorName name={vendor.name} />}
                 </Link>
               )}
             </div>
@@ -286,9 +287,9 @@ export default function HomePage() {
                   <div className="vhead">
                     <h3>
                       {v.link ? (
-                        <a href={v.link} target="_blank" rel="noopener noreferrer">{v.name}</a>
+                        <a href={v.link} target="_blank" rel="noopener noreferrer"><VendorName name={v.name} /></a>
                       ) : (
-                        v.name
+                        <VendorName name={v.name} />
                       )}
                     </h3>
                     <span className="soc">

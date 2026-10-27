@@ -15,6 +15,7 @@ import {
   vendorPath,
 } from "./utils";
 import { useI18n } from "./i18n";
+import { VendorName } from "./vendors";
 
 const FEATURE_CLASS = { ok: "ok", ng: "ng", warning: "warning" };
 
@@ -200,7 +201,7 @@ export default function ProductDetails() {
       <nav className="crumbs" aria-label={t("board.crumbs")}>
         {/* preventScrollReset: the catalog scrolls the board's card into view itself */}
         <Link to="/" viewTransition preventScrollReset>{t("nav.boards")}</Link>/
-        <Link to={vendorPath(vendor.name)} viewTransition preventScrollReset>{vendor.name}</Link>/
+        <Link to={vendorPath(vendor.name)} viewTransition preventScrollReset><VendorName name={vendor.name} /></Link>/
         <Link to={socPath(vendor.name, soc.name)} viewTransition preventScrollReset>{soc.name}</Link>/
         <span>{board.name}</span>
       </nav>
@@ -238,7 +239,7 @@ export default function ProductDetails() {
               ) : (
                 soc.name
               )}
-              <small>{vendor.name}</small>
+              <small><VendorName name={vendor.name} /></small>
             </dd>
             <dt>{t("board.status")}</dt>
             <dd>{["GA", "DEV", "EOL"].includes(board.board_status) ? t(`status.${board.board_status}`) : t("status.none")}</dd>

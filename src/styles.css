@@ -351,8 +351,21 @@ a.chip{text-decoration:none;color:inherit;display:inline-flex;align-items:center
   --display:"Archivo","PingFang SC","Hiragino Sans GB","Noto Sans CJK SC","Source Han Sans SC","Microsoft YaHei",sans-serif;
   --body:"Red Hat Text","PingFang SC","Hiragino Sans GB","Noto Sans CJK SC","Source Han Sans SC","Microsoft YaHei",system-ui,sans-serif;
 }
-:lang(zh) :is(.hero h1,.toolbar h2,.guide-h h1,.prep h3,.steps h3,.done h3,.sect-h,.upcoming h3){font-style:normal;letter-spacing:0}
+:lang(zh) :is(.hero h1,.toolbar h2,.guide-h h1,.prep h3,.steps h3,.done h3,.sect-h,.upcoming h3,.vhead h3){font-style:normal;letter-spacing:0}
 :lang(zh) .hero h1{line-height:1.15}
 :lang(zh) .log>span{max-width:5em}
 :lang(zh) .guide-h h1{line-height:1.1}
 :lang(zh) :is(.eyebrow,.stats,.log>span,.index h4,.filters .lab,.meta dt){letter-spacing:.04em}
+
+/* Vendor names in the zh locale: Chinese first, the brand's English name kept as a quiet
+   suffix so the list still reads "赛昉科技 StarFive" rather than a wall of Chinese only. */
+.vname{white-space:nowrap}
+.v-en{font:500 .52em/1 var(--mono);color:var(--muted);font-style:normal;letter-spacing:0}
+.index li>a .v-en{font-size:11px}
+.index li>a[aria-current="true"] .v-en{color:inherit;opacity:.65}
+.chip .v-en{font-size:10px}
+.chip[aria-current="page"] .v-en,.chip[aria-pressed="true"] .v-en{color:inherit;opacity:.7}
+.vhead h3 .v-en{font-size:.42em}
+.vhead h3 .vname{white-space:normal}
+.toolbar h2 .v-en{font-size:.3em}
+.crumbs .v-en,.meta dd small .v-en{font-size:11px}
